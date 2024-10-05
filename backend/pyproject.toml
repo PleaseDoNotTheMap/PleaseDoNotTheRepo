@@ -11,6 +11,10 @@ websockets = "^13.1"
 requests = "^2.32.3"
 tqdm = "^4.66.5"
 aiohttp = "^3.10.9"
+boto3 = "^1.35.34"
+pystac-client = "^0.8.3"
+rasterio = "^1.4.1"
+pyproj = "^3.7.0"
 
 
 [build-system]
