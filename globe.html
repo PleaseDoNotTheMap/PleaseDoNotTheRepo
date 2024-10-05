@@ -13,6 +13,11 @@
       globe(document.getElementById('glb-container'), {
         // Globe options
       }).globeImageUrl();
+
+      window.onresize = function(event) {
+        globe.width(window.innerWidth);
+        globe.height(window.innerHeight);
+      };
     </script>
 </body>
 </html>
