@@ -1,7 +1,8 @@
 import sqlite3
 from flask import Flask
 from apscheduler.schedulers.background import BackgroundScheduler
-
+from datetime import datetime, timedelta
+from send_notification import send_email
 
 
 def create_sqlite_database(filename):
@@ -62,7 +63,7 @@ def add_to_database():
         # fix datetimes
         name = "Ayoung"
         email = "pvgandhi@uwaterloo.ca"
-        notify_by = "2024-10-05 05:53:25"
+        notify_by = "2024-10-05 17:04:25"
         flyover_on = "2025-04-15 12:55:26"
         location = "Paris, Country"
 
@@ -71,27 +72,46 @@ def add_to_database():
 
         return
 
-def check_notifications():
+def send_notifications():
     
+    with sqlite3.connect('user_notifications.db') as conn:
+        now = datetime.now()
+        two_minutes_later = now + timedelta(minutes=2)
 
-# def send_notification(notification):
-    
-#     with sqlite3.connect('user_notifications.db') as conn:
-#         cur = conn.cursor()
+        print(now)
+        print(two_minutes_later)
 
-#         # script = """ SELECT * FROM notifications WHERE DATE(notify_date) = date('now'); """
-#         script = """ SELECT * FROM notifications """
-#         # script = """SELECT date('now')"""
+        script = """
+                    SELECT * FROM notifications 
+                    WHERE notify_date >= ? AND notify_date <= ?; 
+                    """
 
-#         cur.execute(script)
-#         rows = cur.fetchall()
+        cur = conn.cursor()
+        cur.execute(script, (now.strftime("%Y-%m-%d %H:%M:%S"), two_minutes_later.strftime("%Y-%m-%d %H:%M:%S")))
+        rows = cur.fetchall()
 
-#         for row in rows:
-#             print(row)
+        for row in rows:
+            print(row)
+            send_email(row[1], row[2], row[3], row[4], row[5])
+            print(f"Removing: {row}")
+            remove_notification(conn=conn, id=row[0]) # pass notification id to remove 
 
+
+# add_to_database()
+# send_notifications()
+
+# script = """SELECT * FROM notifications WHERE DATE(notify_date) = date('now')"""
+# with sqlite3.connect('user_notifications.db') as conn:
+#     cur = conn.cursor()
+#     cur.execute(script)
+#     rows = cur.fetchall()
+
+#     print("OLD DATA")
+#     for row in rows:
+#         print(row)
 
 # Schedule the notification check every minute
-scheduler.add_job(check_notifications, 'interval', minutes=1)
+scheduler.add_job(send_notifications, 'interval', minutes=1)
 scheduler.start()
 
 @app.route('/')
