@@ -38,6 +38,18 @@ const renderSatellite = function() {
 
 renderSatellite();
 
+const rotate = function(){
+  globe.controls().autoRotate = true;
+  globe.controls().autoRotateSpeed = 0.4;
+
+  const cloudurl= "http://unpkg.com/three-globe/example/img/clouds/clouds.png";
+
+  const speed = -0.006;
+
+}
+
+rotate();
+
 window.onresize = function(event) {
   globe.width(window.innerWidth);
   globe.height(window.innerHeight);
