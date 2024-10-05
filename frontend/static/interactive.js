@@ -116,6 +116,34 @@ const getScenes = async function() {
     });
 }
 
+const addClouds = function (){
+  const CLOUD_URL = "../images/clouds.png"
+  const ALTITUDE = 0.004;
+  const cloud_rotation_v = -0.006;
+
+
+
+  new THREE.TextureLoader().load(CLOUD_URL, cloudsTexture => {
+    const clouds = new THREE.Mesh(
+      new THREE.SphereGeometry(globe.getGlobeRadius() * (1 + ALTITUDE), 75, 75),
+      new THREE.MeshPhongMaterial({ map: cloudsTexture, transparent: true })
+
+    );
+    globe.scene().add(clouds);
+
+
+
+    (function rotateClouds(){
+      clouds.rotation.y += cloud_rotation_v * Math.PI /180;
+      requestAnimationFrame(rotateClouds);
+    })();
+
+  });
+
+}
+
+addClouds();
+
 const renderSatellite = function() {
   const mtlLoader = new MTLLoader();
   mtlLoader.load('/static/pleasedontsatellite.mtl', (mtl) => {
