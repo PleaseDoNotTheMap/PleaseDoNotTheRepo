@@ -1,6 +1,7 @@
 import Globe from 'globe.gl';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
+import {MTLLoader} from 'three/addons/loaders/MTLLoader.js';
+import {OBJLoader} from 'three/addons/loaders/OBJLoader.js';
 
 const globe = Globe();
 
@@ -26,23 +27,26 @@ const getScenes = async function() {
     });
 }
 
-const renderSatellite = function() {
-  let loader = new GLTFLoader();
-
-  loader.load('/static/satellite.glb', function(gltf) {
-    globe.objectThreeObject(gltf.scene);
-    globe.objectsData([{
-      lat: 0,
-      lng: 0,
-      alt: 1,
-      lbl: 'Satellite',
-    }]);
-  }, undefined, function(error) {
-    console.error(error);
+const renderSatellite = async function() {
+  const mtlLoader = new MTLLoader();
+  mtlLoader.load('/static/pleasedontsatellite.mtl', (mtl) => {
+    mtl.preload();
+    const objLoader = new OBJLoader();
+    objLoader.setMaterials(mtl);
+    objLoader.load('/static/pleasedontsatellite.obj', (obj) => {
+      globe.objectThreeObject(obj);
+      globe.objectsData([{
+        lat: 0,
+        lng: 0,
+        alt: 1,
+        lbl: 'Satellite',
+      }]);
+    }, undefined, function(error) {
+      console.error(error);
+    });
   });
 }
-
-renderSatellite();
+await renderSatellite();
 
 window.onresize = function(event) {
   globe.width(window.innerWidth);
