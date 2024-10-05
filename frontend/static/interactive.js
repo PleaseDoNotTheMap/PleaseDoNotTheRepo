@@ -1,6 +1,6 @@
 import Globe from 'globe.gl';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-
+import * as THREE from '//unpkg.com/three/build/three.module.js';
 
 const globe = Globe({animateIn:false});
 
@@ -59,3 +59,24 @@ window.onresize = function(event) {
   globe.height(window.innerHeight);
 };
 
+// Apply custom globe material
+const globeMaterial = globe.globeMaterial();
+globeMaterial.bumpScale = 15;
+
+new THREE.TextureLoader().load('https://unpkg.com/three-globe/example/img/earth-water.png', texture => {
+  globeMaterial.specularMap = texture;
+  globeMaterial.specular = new THREE.Color('grey');
+  globeMaterial.shininess = 20;
+});
+
+// Manually add a directional light
+const scene = globe.scene(); // Access globe's internal Three.js scene
+
+
+const directionalLight = globe.lights().find(light => light.type === 'DirectionalLight');
+directionalLight.position.set(1, 1, 1); // Adjust position as needed
+scene.add(directionalLight);
+
+
+// const ambientLight = new THREE.AmbientLight(0xffffff, 5); // Soft white light
+// scene.add(ambientLight);
