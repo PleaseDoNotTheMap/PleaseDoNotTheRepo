@@ -12,7 +12,7 @@
       const globe = Globe();
       globe(document.getElementById('glb-container'), {
         // Globe options
-      }).globeImageUrl();
+      }).globeImageUrl("http://unpkg.com/three-globe/example/img/earth-blue-marble.jpg");
 
       window.onresize = function(event) {
         globe.width(window.innerWidth);
