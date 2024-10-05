@@ -5,7 +5,7 @@
   <!-- Basic Page Needs
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <meta charset="utf-8">
-  <title>Sign up to PleaseDoNotMap</title>
+  <title>Sign up to Please Do Not The Map</title>
   <meta name="description" content="">
   <meta name="author" content="">
 
@@ -24,11 +24,13 @@
 
   <!-- Favicon
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <link rel="icon" type="image/png" href="images/favicon.png">
+  <link rel="icon" type="image/png" href="images/Favicon.png">
 
 </head>
 <body>
 
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script src="signup.js" defer></script>
   <!-- Primary Page Layout
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
 <!-- .container is main centered wrapper -->
@@ -37,12 +39,12 @@
 <div class="container">
   <div class="row">
     <div class="column" style="margin-top: 25%">
-      <h4>Welcome to Please Do Not Map!</h4>
+      <h4>Welcome to Please Do Not The Map!</h4>
       <p>This paragraph is just a placehodler for us. Heat it up!</p>
     </div>
   </div>
  
-<form>
+<form class="form">
   <div class="row">
     <div class="six columns">
       <label for="exampleEmailInput">Your email</label>
@@ -58,18 +60,28 @@
   
   <label for="exampleMessage">Well how about you tell us your location?</label>
   <input class="u-full-width" type = "text" placeholder="Lat 42.497971, Long -92.382751" id="examplelocation"></textarea>
+  
+  
   <label for="exampleRecipientInput">When would you like to be notified?</label>
-  <select class="u-full-width" id="exampleRecipientInput">
-    <option value="Option 1">No, I don't want to get notified</option>
-    <option value="Option 2">A day before</option>
-    <option value="Option 3">A month after</option>
+  <label class="example-send-yourself-copy">
+    <input type="checkbox">
+    <span class="label-body">No! I don't want notification!</span>
+    <input type="checkbox">
+    <span class="label-body">Before a day!</span>
+    <input type="checkbox">
+    <span class="label-body">Before a month?</span>
+    
+  </label>
+
+  <input class ="u-full-width" class="button-primary" type="submit" value="Submit">
+
   
   <!-- <label class="example-send-yourself-copy">
     <input type="checkbox">
     <span class="label-body">I would like to receive an email notification</span>
   </label>
    -->
-  <input class="button-primary" type="submit" value="Submit">
+  
 </form>
 </div>
 
