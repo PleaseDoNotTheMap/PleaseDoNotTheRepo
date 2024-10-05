@@ -1,4 +1,8 @@
 import sqlite3
+from flask import Flask
+from apscheduler.schedulers.background import BackgroundScheduler
+
+
 
 def create_sqlite_database(filename):
     """ create a database connection to an SQLite database """
@@ -28,7 +32,6 @@ def create_table(db):
             cursor.execute(script)
             conn.commit()
 
-
 def add_notification(conn, notification):
     sql = ''' INSERT INTO notifications(name,email,notify_date,flyover_date,location)
               VALUES(?,?,?,?,?) '''
@@ -43,28 +46,63 @@ def remove_notification(conn, id):
     cur.execute(delete_stmt, (id,))
     conn.commit()
 
+app = Flask(__name__)
+scheduler = BackgroundScheduler()
 
 # MAIN:
 # create_sqlite_database('user_notifications.db')
 # create_table('user_notifications.db')
 
-with sqlite3.connect('user_notifications.db') as conn:
-    # notification = ("Ayoung", "test@example.com", "10/6/2024 11:53:25", "05/15/2025 12:55:26", "Paris, Country")
-    # notif_id = add_notification(conn, notification)
 
-    cur = conn.cursor()
+# Form submit: add new notification to branch
+def add_to_database():
+    with sqlite3.connect('user_notifications.db') as conn:
 
-    script = """ SELECT * FROM notifications """
+        # parse information from json
+        # fix datetimes
+        name = "Ayoung"
+        email = "pvgandhi@uwaterloo.ca"
+        notify_by = "2024-10-05 05:53:25"
+        flyover_on = "2025-04-15 12:55:26"
+        location = "Paris, Country"
 
-    # script = """ SELECT * FROM notifications WHERE notify_date >= datetime('now'); """
-    # script = """SELECT date('now')"""
+        notification = (name, email, notify_by, flyover_on, location)
+        notif_id = add_notification(conn, notification)
 
-    cur.execute(script)
-    rows = cur.fetchall()
+        return
 
-    for row in rows:
-        print(row)
+def check_notifications():
+    
 
+# def send_notification(notification):
+    
+#     with sqlite3.connect('user_notifications.db') as conn:
+#         cur = conn.cursor()
+
+#         # script = """ SELECT * FROM notifications WHERE DATE(notify_date) = date('now'); """
+#         script = """ SELECT * FROM notifications """
+#         # script = """SELECT date('now')"""
+
+#         cur.execute(script)
+#         rows = cur.fetchall()
+
+#         for row in rows:
+#             print(row)
+
+
+# Schedule the notification check every minute
+scheduler.add_job(check_notifications, 'interval', minutes=1)
+scheduler.start()
+
+@app.route('/')
+def index():
+    return "Notification Service is Running!"
+
+if __name__ == '__main__':
+    try:
+        app.run(port=5000)
+    except (KeyboardInterrupt, SystemExit):
+        scheduler.shutdown()
 
 
 

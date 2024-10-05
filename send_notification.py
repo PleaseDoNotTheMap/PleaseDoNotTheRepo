@@ -28,96 +28,92 @@ def calc_dates(date_flyover, date_notify):
 
     return time_difference
 
-sender_email = "pleasedonotthemap@gmail.com"
-password = "tlicxaprtqdrrvcg"
-
-# all given to us
-name = "John"
-receiver_email = "verahhxii@gmail.com"
-date_to_notify = "02/13/2025 11:53:25"
-date_of_flyover = "08/15/2025 13:55:26"
-location = "Toronto, Canada"
 
 
-date_notify = datetime.strptime(date_to_notify, "%m/%d/%Y %H:%M:%S")
-date_flyover = datetime.strptime(date_of_flyover, "%m/%d/%Y %H:%M:%S")
+# Send the email
+def send_email(name, receiver_email, date_to_notify, date_of_flyover, location):
+  sender_email = "pleasedonotthemap@gmail.com"
+  password = "tlicxaprtqdrrvcg"
 
-time_difference = calc_dates(date_flyover, date_notify)
+  date_notify = datetime.strptime(date_to_notify, "%m/%d/%Y %H:%M:%S")
+  date_flyover = datetime.strptime(date_of_flyover, "%m/%d/%Y %H:%M:%S")
 
-message = MIMEMultipart("alternative")
-message["Subject"] = "Heads Up! Landsat is arriving soon!"
-message["From"] = sender_email
-message["To"] = receiver_email
+  time_difference = calc_dates(date_flyover, date_notify)
 
-html = f"""\
-<html>
-  <head>
-    <style>
-      body {{
-        font-family: Arial, sans-serif;
-        background-color: #f4f4f9;
-        margin: 0;
-        padding: 20px;
-        color: #333;
-      }}
+  message = MIMEMultipart("alternative")
+  message["Subject"] = "Heads Up! Landsat is arriving soon!"
+  message["From"] = sender_email
+  message["To"] = receiver_email
+
+  html = f"""\
+  <html>
+    <head>
+      <style>
+        body {{
+          font-family: Arial, sans-serif;
+          background-color: #f4f4f9;
+          margin: 0;
+          padding: 20px;
+          color: #333;
+        }}
+      
+        h1 {{
+          color: #574AE2;
+        }}
+        p {{
+          font-size: 16px;
+          line-height: 1.6;
+        }}
+        a {{
+          color: #574AE2;
+          text-decoration: none;
+        }}
+        a:hover {{
+          text-decoration: underline;
+        }}
+        .highlight {{
+          font-weight: bold;
+          color: #574AE2;
+        }}
+      </style>
+    </head>
+    <body>
+        <h1>Heads up, {name}!</h1>
+        <p>
+          NASA's Landsat satellite will be flying over <span class="highlight">{location}</span> in 
+          <span class="highlight">{time_difference}</span> on 
+          <span class="highlight">{datetime.strftime(date_notify, "%B %d, %Y")}</span> at 
+          <span class="highlight">{datetime.strftime(date_notify, "%H:%M:%S")}</span>.
+        </p>
+        <p>
+          Check out <a href="https://pleasedonotthemap.space">Please Do Not the Map</a> for more information!
+        </p>
+    </body>
+  </html>
+  """
+
+  # Plain-text content as a fallback
+  text = f"""\
+  Heads up {name}!
+  NASA's Landsat satellite will be flying over {location} in {time_difference} on 
+  {datetime.strftime(date_notify, "%m/%d/%y")} at {datetime.strftime(date_notify, "%H:%M:%S")}
+  Check out Please Do Not the Map for more information: https://pleasedonotthemap.space
+  """
+
+  # Attach both parts (plain-text and HTML) to the message
+  part1 = MIMEText(text, "plain")
+  part2 = MIMEText(html, "html")
+  message.attach(part1)
+  message.attach(part2)
+
+  # Create secure connection with server and send email
+  context = ssl.create_default_context()
+  with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
+      server.login(sender_email, password)
+      server.sendmail(
+          sender_email, receiver_email, message.as_string()
+      )
     
-      h1 {{
-        color: #574AE2;
-      }}
-      p {{
-        font-size: 16px;
-        line-height: 1.6;
-      }}
-      a {{
-        color: #574AE2;
-        text-decoration: none;
-      }}
-      a:hover {{
-        text-decoration: underline;
-      }}
-      .highlight {{
-        font-weight: bold;
-        color: #574AE2;
-      }}
-    </style>
-  </head>
-  <body>
-      <h1>Heads up, {name}!</h1>
-      <p>
-        NASA's Landsat satellite will be flying over <span class="highlight">{location}</span> in 
-        <span class="highlight">{time_difference}</span> on 
-        <span class="highlight">{datetime.strftime(date_notify, "%B %d, %Y")}</span> at 
-        <span class="highlight">{datetime.strftime(date_notify, "%H:%M:%S")}</span>.
-      </p>
-      <p>
-        Check out <a href="https://pleasedonotthemap.space">Please Do Not the Map</a> for more information!
-      </p>
-  </body>
-</html>
-"""
-
-# Plain-text content as a fallback
-text = f"""\
-Heads up {name}!
-NASA's Landsat satellite will be flying over {location} in {time_difference} on 
-{datetime.strftime(date_notify, "%m/%d/%y")} at {datetime.strftime(date_notify, "%H:%M:%S")}
-Check out Please Do Not the Map for more information: https://pleasedonotthemap.space
-"""
-
-# Attach both parts (plain-text and HTML) to the message
-part1 = MIMEText(text, "plain")
-part2 = MIMEText(html, "html")
-message.attach(part1)
-message.attach(part2)
-
-# Create secure connection with server and send email
-context = ssl.create_default_context()
-with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
-    server.login(sender_email, password)
-    server.sendmail(
-        sender_email, receiver_email, message.as_string()
-    )
-  
 
 
 
