@@ -116,7 +116,7 @@ const getScenes = async function() {
     });
 }
 
-const renderSatellite = async function() {
+const renderSatellite = function() {
   const mtlLoader = new MTLLoader();
   mtlLoader.load('/static/pleasedontsatellite.mtl', (mtl) => {
     mtl.preload();
@@ -135,7 +135,7 @@ const renderSatellite = async function() {
     });
   });
 }
-await renderSatellite();
+renderSatellite();
 
 const rotate = function(){
   globe.controls().autoRotate = true;
