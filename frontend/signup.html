@@ -50,22 +50,25 @@
     </div>
 
     <div class="six columns">
-      <label for="exampleRecipientInput">Cities</label>
-      <select class="u-full-width" id="exampleRecipientInput">
-        <option value="Option 1">Toronto</option>
-        <option value="Option 2">Washington DC</option>
-        <option value="Option 3">Wonderland</option>
-      </select>
+      <label for="exampleUsernameInput">Your username</label>
+      <input class="u-full-width" type="text" placeholder="Kitten" id="exampleusername">
     </div>
   </div>
 
   
   <label for="exampleMessage">Well how about you tell us your location?</label>
-  <input class="u-full-width" type = "text" placeholder="Lat 42.497971, Long -92.382751" id="exampleMessage"></textarea>
-  <label class="example-send-yourself-copy">
+  <input class="u-full-width" type = "text" placeholder="Lat 42.497971, Long -92.382751" id="examplelocation"></textarea>
+  <label for="exampleRecipientInput">When would you like to be notified?</label>
+  <select class="u-full-width" id="exampleRecipientInput">
+    <option value="Option 1">No, I don't want to get notified</option>
+    <option value="Option 2">A day before</option>
+    <option value="Option 3">A month after</option>
+  
+  <!-- <label class="example-send-yourself-copy">
     <input type="checkbox">
     <span class="label-body">I would like to receive an email notification</span>
   </label>
+   -->
   <input class="button-primary" type="submit" value="Submit">
 </form>
 </div>
