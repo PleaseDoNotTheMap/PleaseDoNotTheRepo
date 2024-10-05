@@ -1,3 +1,7 @@
+import Globe from 'globe.gl';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
+
 const globe = Globe();
 
 globe(document.getElementById('glb-container'), {
@@ -18,7 +22,21 @@ const getScenes = async function() {
     });
 }
 
-getScenes();
+const renderSatellite = function() {
+  let loader = new GLTFLoader();
+
+  loader.load('/static/satellite.glb', function(gltf) {
+    scene.add(gltf.scene);
+  }, undefined, function(error) {
+    console.error(error);
+  });
+
+  globe.objectsData([
+    { type: 'satellite', lat: 0, lng: 0, altitude: 10}
+  ]);
+}
+
+renderSatellite();
 
 window.onresize = function(event) {
   globe.width(window.innerWidth);
