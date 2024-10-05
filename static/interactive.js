@@ -14,6 +14,9 @@ const getApiToken = function() {
   fetch("https://m2m.cr.usgs.gov/api/api/json/stable/login-token",
     {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify({
         username: 'receive@leozqi.com',
         password: super_unsafe
