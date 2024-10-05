@@ -1,10 +1,8 @@
 import Globe from 'globe.gl';
-<<<<<<< HEAD
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import * as THREE from '//unpkg.com/three/build/three.module.js';
 
 const globe = Globe({animateIn:false});
-=======
 
 import {MTLLoader} from 'three/addons/loaders/MTLLoader.js';
 import {OBJLoader} from 'three/addons/loaders/OBJLoader.js';
@@ -85,7 +83,6 @@ let pinSet = [
     size: 20,
   }
 ]
->>>>>>> feature-paths
 
 globe(document.getElementById('globe'), {})
   .globeImageUrl("https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg")
@@ -121,14 +118,6 @@ const getScenes = async function() {
       globe.polygonsData(data);
     });
 }
-
-<<<<<<< HEAD
-getScenes();
-
-const renderSatellite = function() {
-  let loader = new GLTFLoader();
-=======
->>>>>>> feature-paths
 
 const renderSatellite = async function() {
   const mtlLoader = new MTLLoader();
