@@ -2,7 +2,7 @@ import Globe from 'globe.gl';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 
-const globe = Globe();
+const globe = Globe({animateIn:false});
 
 globe(document.getElementById('glb-container'), {
         // Globe options
@@ -21,6 +21,7 @@ const getScenes = async function() {
       globe.polygonsData(data);
     });
 }
+getScenes();
 
 const renderSatellite = function() {
   let loader = new GLTFLoader();
