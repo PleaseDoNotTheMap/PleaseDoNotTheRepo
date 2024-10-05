@@ -2,7 +2,7 @@ import Globe from 'globe.gl';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 
-const globe = Globe();
+const globe = Globe({animateIn:false});
 
 globe(document.getElementById('globe'), {})
   .globeImageUrl("https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg")
@@ -26,6 +26,8 @@ const getScenes = async function() {
     });
 }
 
+getScenes();
+
 const renderSatellite = function() {
   let loader = new GLTFLoader();
 
@@ -43,6 +45,14 @@ const renderSatellite = function() {
 }
 
 renderSatellite();
+
+const rotate = function(){
+  globe.controls().autoRotate = true;
+  globe.controls().autoRotateSpeed = 0.4;
+
+}
+
+rotate();
 
 window.onresize = function(event) {
   globe.width(window.innerWidth);
