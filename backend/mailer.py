@@ -6,8 +6,6 @@ from email.mime.text import MIMEText
 
 
 class Mailer:
-    def __init__(self, session):
-        self.session = session
 
     @staticmethod
     def calc_dates(date_flyover, date_notify) -> str:
