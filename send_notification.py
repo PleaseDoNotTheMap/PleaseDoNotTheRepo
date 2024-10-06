@@ -2,6 +2,8 @@ import smtplib, ssl
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from datetime import datetime 
+import vonage
+
 
 # Calculate the time difference between notification and flyover
 def calc_dates(date_flyover, date_notify):
@@ -118,5 +120,26 @@ def send_email(name, receiver_email, date_to_notify, date_of_flyover, location):
   return
 
 
+def send_SMS(name, phone_number, date_to_notify, date_of_flyover, location):
 
+  date_notify = datetime.strptime(date_to_notify, "%Y-%m-%d %H:%M:%S")
+  date_flyover = datetime.strptime(date_of_flyover, "%Y-%m-%d %H:%M:%S")
+
+  time_difference = calc_dates(date_flyover, date_notify)
+
+  client = vonage.Client(key="4bdfb3ba", secret="BfsaXVcp9LnvBXhj")
+  sms = vonage.Sms(client)
+
+  responseData = sms.send_message(
+    {
+        "from": "17783905789",
+        "to": f"{phone_number}",
+        "text":f"""Heads up {name}! NASA's Landsat satellite will be flying over {location} in {time_difference} on {datetime.strftime(date_notify, "%B %d, %Y")} at {datetime.strftime(date_notify, "%H:%M:%S")}. Check out Please Do Not the Map for more information: https://pleasedonotthemap.space""",
+      }
+  )
+
+  if responseData["messages"][0]["status"] == "0":
+      print("Message sent successfully.")
+  else:
+      print(f"Message failed with error: {responseData['messages'][0]['error-text']}")
 

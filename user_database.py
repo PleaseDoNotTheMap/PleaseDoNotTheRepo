@@ -22,10 +22,12 @@ def create_table(db):
     script = """CREATE TABLE IF NOT EXISTS notifications (
         id INTEGER PRIMARY KEY, 
         name text NOT NULL, 
-        email text NOT NULL,
+        email TEXT,
+        phone number TEXT,
         notify_date DATETIME,
         flyover_date DATETIME,
-        location TEXT
+        location TEXT,
+        type TEXT
         );"""
     
     with sqlite3.connect(db) as conn:
@@ -34,8 +36,8 @@ def create_table(db):
             conn.commit()
 
 def add_notification(conn, notification):
-    sql = ''' INSERT INTO notifications(name,email,notify_date,flyover_date,location)
-              VALUES(?,?,?,?,?) '''
+    sql = ''' INSERT INTO notifications(name,email,notify_date,flyover_date,location,type)
+              VALUES(?,?,?,?,?,?) '''
     cur = conn.cursor()
     cur.execute(sql, notification)
     conn.commit()
@@ -64,10 +66,11 @@ def add_to_database():
         name = "Ayoung"
         email = "pvgandhi@uwaterloo.ca"
         notify_by = "2024-10-05 17:04:25"
-        flyover_on = "2025-04-15 12:55:26"
+        flyover_on = "2025-12-15 12:55:26"
         location = "Paris, Country"
+        type = "email"
 
-        notification = (name, email, notify_by, flyover_on, location)
+        notification = (name, email, notify_by, flyover_on, location, type)
         notif_id = add_notification(conn, notification)
 
         return
@@ -84,7 +87,7 @@ def send_notifications():
         script = """
                     SELECT * FROM notifications 
                     WHERE notify_date >= ? AND notify_date <= ?; 
-                    """
+                 """
 
         cur = conn.cursor()
         cur.execute(script, (now.strftime("%Y-%m-%d %H:%M:%S"), two_minutes_later.strftime("%Y-%m-%d %H:%M:%S")))
@@ -124,5 +127,7 @@ if __name__ == '__main__':
     except (KeyboardInterrupt, SystemExit):
         scheduler.shutdown()
 
+
+# PUWRW4SHLU996XH5XTLJB8E2
 
 
