@@ -10,6 +10,7 @@ const markerSvg = `<svg viewBox="-4 0 36 36">
   <circle fill="black" cx="14" cy="14" r="7"></circle>
 </svg>`;
 
+
 function dragElement(elmnt) {
   var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
   var startTop = 0;
@@ -108,13 +109,15 @@ globe(document.getElementById('globe'), {})
   })
   .htmlTransitionDuration([0]);
 
-const getScenes = async function() {
-  fetch("/static/small.geojson")
+const getPaths = function() {
+  fetch("/static/paths.geojson")
     .then(response => response.json())
     .then(data => {
-      globe.polygonsData(data);
+      globe.polygonsData(data["features"]);
     });
 }
+
+getPaths();
 
 const addClouds = function (){
   const CLOUD_URL = "../images/clouds.png"
