@@ -40,10 +40,11 @@ class App:
 
     @routes.post('/submit')
     async def submit(request: aiohttp.web.Request):
-        data = await request.json()
+        data = dict(await request.json())
+        payload = tuple(list(data.values()))
 
-        return web.Response(text=json.dumps(data),
-                            content_type='application/json')
+        ret = request.app['this'].db.add_notification(payload)
+        return web.Response(text=str(ret), content_type='text/html')
 
     @routes.post('/get-data')
     async def get_data(request: aiohttp.web.Request):

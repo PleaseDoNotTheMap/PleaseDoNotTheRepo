@@ -54,8 +54,8 @@
     </div>
 
     <div class="four columns">
-      <label for="usernameInput">Your Username</label>
-      <input class="u-full-width" type="text" placeholder="Kitten" id="usernameInput" x-model="username" required>
+      <label for="nameInput">Your Name</label>
+      <input class="u-full-width" type="text" placeholder="Kitten" id="nameInput" x-model="name" required>
     </div>
 
     <div class="four columns">
@@ -68,13 +68,12 @@
   <label for="locationInput">Where's the flyover location you'd like to be notified of?</label>
   <input class="u-full-width" type = "text" placeholder="Lat 42.497971, Long -92.382751" id="locationInput" x-model="location" required></textarea>
   
-  
-  <!-- <label for="exampleRecipientInput">When would you like to be notified?</label>
-  <select x-data="dropdown" class="u-full-width" id="exampleRecipientInput">
-    <option value="No Notification">I do not want to get notified</option>
-    <option value="Notification a day before">A day before</option>
-    <option value="Notification a month before">A month before</option>
-  </select> -->
+  <label for="exampleRecipientInput">When would you like to be notified?</label>
+  <select x-model="dropdown" class="u-full-width" id="exampleRecipientInput">
+    <option value='0'>I do not want to get notified</option>
+    <option value='1'>A day before</option>
+    <option value='2'>A month before</option>
+  </select>
 
   <button class ="u-half-width button-primary" type="submit">Submit</button>
 
@@ -96,27 +95,38 @@
 <script>
   function formHandler() {
             return {
-                email: '',
-                username: '',
-                location: '',
-                phoneNumber: '',
+                email: null,
+                name: null,
+                location: null,
+                phoneNumber: null,
+                dropdown: null,
                 successMessage: false,
 
                 async submitForm() {
                     try {
                         console.log(this.phoneNumber)
 
-                        const response = await axios.get(`localhost:8080/`, {
+                        let response = await axios.get(`http://0.0.0.0:8080/`);
+                        console.log(response)
 
-                        });
+                        let payload = {
+                          name: this.name,
+                          email: this.email,
+                          notify_date: 0,
+                          flyover_date: 0,
+                          location: this.location
+                        }
+                        response = await axios.post('http://0.0.0.0:8080/submit', payload)
+                        console.log(response)
 
                         this.successMessage = true;
 
                         // Reset form fields
                         this.email = null;
-                        this.username = null;
+                        this.name = null;
                         this.location = null;
                         this.phoneNumber = null;
+                        this.dropdown = null;
 
                     } catch (error) {
                         console.error('Error submitting form:', error);
