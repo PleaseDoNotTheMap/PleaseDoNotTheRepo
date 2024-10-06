@@ -3,12 +3,16 @@ import planetary_computer
 import odc.stac
 import matplotlib.pyplot as plt
 import logging
-
+import json
+from datetime import datetime
 from pystac.extensions.eo import EOExtension as eo
 
 from get_wrs import ConvertToWRS
+#wrs_converter = ConvertToWRS(shapefile="./WRS2_descending.shp")
 
-wrs_converter = ConvertToWRS(shapefile="./WRS2_descending.shp")
+cycles = None
+with open("cycles_full.json", "r") as f:
+    cycles = json.load(f)
 
 
 def lat_lng_to_wrs(lat: float, lng: float) -> list:
@@ -55,6 +59,45 @@ def get_with_params(bbox: list, datestr: str, max_cloud_cover: int) -> None:
     ax.set_title("Natural Color, Redmond, WA")
     plt.show()
 
+
+def get_next_acq(lat: float, lng: float) -> dict:
+    """
+    {
+        "landsat_7": {
+            "1/1/2021": {
+                "path": "100,116,132",
+                "cycle": "3"
+            }
+        },
+    }
+
+    Returns
+
+    {
+        "landsat_7": datetime,
+        "landsat_8": datetime,
+        "landsat_9": datetime
+    }
+    """
+    values = {
+#        "landsat_7": None,
+        "landsat_8": None,
+        "landsat_9": None
+    }
+
+    now = datetime.now()
+
+    path = 67
+
+    for satellite in values.keys():
+        for mission in cycles[satellite].keys():
+            mission_date = datetime.strptime(mission, "%m/%d/%Y")
+            if mission_date > now and str(path) in cycles[satellite][mission]["path"]:
+                values[satellite] = mission_date
+                break
+    return values
+
+
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
-    lat_lng_to_wrs(47.60357, -122.32945)
+    print(get_next_acq(47.5469, -122.2751))
