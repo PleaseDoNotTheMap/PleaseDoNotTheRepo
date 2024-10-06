@@ -526,7 +526,7 @@ button,
 }
 
 .pointer-events-none{
-  pointer-events: none;
+  pointer-events: none !important;
 } 
 
 /*
@@ -698,11 +698,18 @@ video {
 
 .mt-2 {
   margin-top: 0.5rem;
+
+}
+
+.mt-18 {
+  margin-top: 30rem;
 }
 
 .ml-6 {
   margin-left: 1.5rem;
 }
+
+
 
 .pl-10{
   padding-left: 2.5rem;
@@ -950,6 +957,10 @@ video {
   padding-top: 0.5rem;
 }
 
+.pt-4 {
+  padding-top: 2.6rem !important;
+}
+
 .pr-0 {
   padding-right: 0px;
 }
@@ -961,7 +972,7 @@ video {
 
 .text-base {
   font-size: 1.5rem;
-  line-height: 1.5rem;
+  line-height: 2rem;
 }
 
 .text-sm {
@@ -973,6 +984,9 @@ video {
   font-weight: 700;
 }
 
+.top-x {
+  top: 2.6rem;
+}
 .top-16 {
   margin-top: 4rem; /* Adjust according to your design */
 }
@@ -987,6 +1001,7 @@ video {
 
 .font-medium {
   font-weight: 500;
+  font-size: 1.5rem !important;
 }
 
 .uppercase {
@@ -1125,6 +1140,10 @@ video {
 }
 
 @media (min-width: 640px) {
+
+  .pt-4 {
+    padding-top: 1rem !important;
+  }
 
   .sm\:flex {
     display: flex;
