@@ -1,4 +1,5 @@
 import ast
+import aiohttp_cors
 import json
 import logging
 
@@ -30,6 +31,8 @@ class App:
         self.scheduler = BackgroundScheduler()
         self.mailer = Mailer()
         self.db = Database('user_notifications.db')
+
+        self._setup_cors()
 
     @routes.get('/')
     async def index(request):
@@ -94,6 +97,18 @@ class App:
 
         yield
         await self.session.close()
+
+    def _setup_cors(self):
+        cors = aiohttp_cors.setup(self.app, defaults={
+            "*": aiohttp_cors.ResourceOptions(
+                allow_credentials=True,
+                expose_headers="*",
+                allow_headers="*"
+            )
+        })
+
+        for route in list(self.app.router.routes()):
+            cors.add(route)
 
     def run(self):
         self.scheduler.add_job(self.db.send_notifications, 'interval', minutes=1)

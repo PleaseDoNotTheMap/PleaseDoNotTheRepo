@@ -19,6 +19,8 @@ matplotlib = "^3.9.2"
 shapely = "^2.0.6"
 beautifulsoup4 = "^4.12.3"
 gdal = "^3.9.2"
+aiohttp-cors = "^0.7.0"
+vonage = "^3.17.1"
 
 [build-system]
 requires = ["poetry-core"]
