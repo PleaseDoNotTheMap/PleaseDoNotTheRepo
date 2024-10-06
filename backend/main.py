@@ -6,6 +6,7 @@ import aiohttp
 from aiohttp import web
 from apscheduler.schedulers.background import BackgroundScheduler
 
+from database import Database
 from landstat import API
 from mailer import Mailer
 
@@ -27,16 +28,22 @@ class App:
         self.app.cleanup_ctx.append(self._context)
         self.app.add_routes(routes)
         self.scheduler = BackgroundScheduler()
+        self.mailer = Mailer()
+        self.db = Database('user_notifications.db')
+
+    @routes.get('/')
+    async def index(request):
+        return web.Response(text='Server is up!', content_type='text/html')
 
     @routes.post('/submit')
-    async def submit(request):
+    async def submit(request: aiohttp.web.Request):
         data = await request.json()
 
         return web.Response(text=json.dumps(data),
                             content_type='application/json')
 
     @routes.post('/get-data')
-    async def get_data(request):
+    async def get_data(request: aiohttp.web.Request):
         data = await request.json()
 
         results = await request.app['api'].search({
@@ -64,21 +71,34 @@ class App:
                             results = await request.app['api'].search(message['query'])
                             await ws.send_str(json.dumps(results))
             elif received.type == aiohttp.WSMsgType.ERROR:
-                print(f'Ws conn closed with exception {ws.exception()}')
+                logger.info("Ws conn closed with {ws.exception()}")
 
-        print('Websocket connection closed')
+        logger.info(f"Ws conn closed")
 
         return ws
+
+    # async def test(self):
+    #     name = "Ayoung"
+    #     email = "pvgandhi@uwaterloo.ca"
+    #     notify_by = "2024-10-05 17:04:25"
+    #     flyover_on = "2025-04-15 12:55:26"
+    #     location = "Paris, Country"
+    #
+    #     notification = (name, email, notify_by, flyover_on, location)
+    #     notif_id = self.db.add_notification(notification)
 
     async def _context(self, app):
         self.session = aiohttp.ClientSession()
         app['api'] = await API(self.session).start()
-        app['mailer'] = Mailer(self.session)
+        app['this'] = self
 
         yield
         await self.session.close()
 
     def run(self):
+        self.scheduler.add_job(self.db.send_notifications, 'interval', minutes=1)
+        self.scheduler.start()
+
         web.run_app(self.app)
 
 
