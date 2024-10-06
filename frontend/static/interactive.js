@@ -82,8 +82,8 @@ let pinSet = [
     lat: 0,
     lng: 0,
     alt: 0,
-    color: 'white',
-    size: 30,
+    color: '#40E0D0',
+    size: 35,
   }
 ]
 
