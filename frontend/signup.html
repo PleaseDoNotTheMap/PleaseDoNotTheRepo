@@ -27,6 +27,11 @@
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <link rel="icon" type="image/png" href="images/Favicon.png">
 
+    <!-- Places API
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <script type="module" src="https://unpkg.com/@googlemaps/extended-component-library@0.6"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCunx3DEkoYwHYb0RYa4hK6wZYDug9Z2qI&libraries=places"></script>
+
 </head>
 <body>
 
@@ -66,7 +71,30 @@
 
   
   <label for="locationInput">Where's the flyover location you'd like to be notified of?</label>
+
+  <gmpx-api-loader key="AIzaSyCunx3DEkoYwHYb0RYa4hK6wZYDug9Z2qI" solution-channel="GMP_GE_placepicker_v1"></gmpx-api-loader>
   <input class="u-full-width" type = "text" placeholder="Lat 42.497971, Long -92.382751" id="locationInput" x-model="location" required></textarea>
+
+
+  <script>
+    // Get references to the autocomplete input and place info elements
+    const autocompleteInput = document.getElementById('locationInput');
+
+    // Set up Google Places Autocomplete
+    const autocomplete = new google.maps.places.Autocomplete(autocompleteInput);
+
+    // Listen for the place_changed event
+    google.maps.event.addListener(autocomplete, 'place_changed', function () {
+        const place = autocomplete.getPlace();
+        if (place && place.geometry) {
+            const address = place.formatted_address;
+            const latitude = place.geometry.location.lat();
+            const longitude = place.geometry.location.lng();
+            const mesg = "Address: " + address + "\nLatitude: " + latitude + "\nLongitude: " + longitude;
+            console.log(mesg);
+        }
+    });
+</script>
   
   <label for="exampleRecipientInput">When would you like to be notified?</label>
   <select x-model="dropdown" class="u-full-width" id="exampleRecipientInput">
