@@ -14,6 +14,10 @@ aiohttp = "^3.10.9"
 apscheduler = "^3.10.4"
 aiohttp-cors = "^0.7.0"
 vonage = "^3.17.1"
+pystac-client = "^0.8.3"
+planetary-computer = "^1.0.0"
+odc-stac = "^0.3.10"
+matplotlib = "^3.9.2"
 
 
 [build-system]
