@@ -1,0 +1,3 @@
+[submodule "backend/LatLongToWRS"]
+	path = backend/LatLongToWRS
+	url = https://github.com/robintw/LatLongToWRS.git
