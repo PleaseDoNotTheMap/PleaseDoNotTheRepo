@@ -20,6 +20,11 @@ sh.setFormatter(formatter)
 logger.addHandler(sh)
 
 
+@routes.get('/')
+async def index(request):
+    return web.Response(text='Hello, World!')
+
+
 @routes.post('/get-data')
 async def get_data(request):
     data = await request.json()
@@ -66,7 +71,13 @@ async def main(app):
     await session.close()
 
 
-app = web.Application()
-app.cleanup_ctx.append(main)
-app.add_routes(routes)
-web.run_app(app)
+async def app_factory():
+    app = web.Application()
+    app.cleanup_ctx.append(main)
+    app.add_routes(routes)
+    return app
+
+
+if __name__ == "__main__":
+    web.run_app(app_factory())
+
