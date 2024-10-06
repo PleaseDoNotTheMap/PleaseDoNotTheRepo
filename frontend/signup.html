@@ -126,9 +126,33 @@
                 email: null,
                 name: null,
                 location: null,
+                lat: null,
+                long: null,
+                addressPretty: null,
+                addressComponents: null,
                 phoneNumber: null,
                 dropdown: null,
                 successMessage: false,
+
+                init() {
+                    this.initAutocomplete();
+                },
+
+                initAutocomplete() {
+                    const autocompleteInput = document.getElementById('locationInput');
+                    this.placeAutocomplete = new google.maps.places.Autocomplete(autocompleteInput);
+
+                    this.placeAutocomplete.addListener('place_changed', () => {
+                        const place = this.placeAutocomplete.getPlace();
+                        if (place && place.geometry) {
+                            console.log(place)
+                            this.lat = place.geometry.location.lat()
+                            this.long = place.geometry.location.lng()
+                            this.addressPretty = place.formatted_address
+                            this.addressComponents = place.address_components
+                            }
+                        });
+                },
 
                 async submitForm() {
                     try {
@@ -138,14 +162,17 @@
                         console.log(response)
 
                         let payload = {
-                          name: this.name,
-                          email: this.email,
-                          phoneNumber: this.phoneNumber,
-                          notify_date: this.dropdown,
-                          flyover_date: 0,
-                          lat: this.latitude,
-                          long: this.longitude
+                            name: this.name,
+                            email: this.email,
+                            phone_number: this.phoneNumber,
+                            notify_date: this.dropdown,
+                            flyover_date: 0,
+                            lat: this.lat,
+                            long: this.long,
+                            address_pretty: this.addressPretty,
+                            address_components: this.addressComponents
                         }
+
                         response = await axios.post('http://0.0.0.0:8080/submit', payload)
                         console.log(response)
 
@@ -161,7 +188,7 @@
                     } catch (error) {
                         console.error('Error submitting form:', error);
                     }
-                }
+                },
             }
         }
   </script>

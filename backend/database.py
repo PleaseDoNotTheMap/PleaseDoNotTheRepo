@@ -13,12 +13,15 @@ class Database:
     def start(self):
         script = """CREATE TABLE IF NOT EXISTS notifications (
                     id INTEGER PRIMARY KEY, 
-                    name text NOT NULL, 
-                    email TEXT,
-                    phone number TEXT,
+                    name TEXT NOT NULL, 
+                    email TEXT NOT NULL,
+                    phone_number TEXT NOT NULL,
                     notify_date DATETIME,
                     flyover_date DATETIME,
-                    location TEXT,
+                    lat FLOAT,
+                    long FLOAT,
+                    address_pretty TEXT,
+                    address_components TEXT
                     );"""
         self._exec(script)
 
@@ -32,13 +35,16 @@ class Database:
             conn.commit()
 
     def add_notification(self, notification: tuple):
-        sql = """INSERT INTO notifications(name, email, phone_number, notify_date, flyover_date, location)
-                 VALUES(?, ?, ?, ?, ?, ?)"""
-        
+        sql = """INSERT INTO notifications(name, email, phone_number, 
+        notify_date, flyover_date, lat, long, address_pretty, address_components)
+                 VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)"""
+
         flyover_info = get_next_acq(notification[6], notification[7])
 
         landsat8 = flyover_info.get("landsat_8", {}).get("date")
         landsat9 = flyover_info.get("landsat_9", {}).get("date")
+        # landsat8 = datetime.now()
+        # landsat9 = datetime.now()
 
         if landsat8 and landsat9:
             flyover_date = min(landsat8, landsat9)
@@ -62,13 +68,12 @@ class Database:
             return cur.lastrowid
 
     def remove_notification(self, id_num):
-        sql = """DELETE FROM notifications WHERE id = ?""" 
+        sql = """DELETE FROM notifications WHERE id = ?"""
         self._exec(sql, (id_num))
     
     def get_user_notifications(self, email):
-        sql = """SELECT * FROM notifications
-                WHERE email = ?;
-            """
+        sql = """SELECT * FROM notifications 
+                 WHERE email = ?"""
         with sqlite3.connect(self.db_file) as conn:
             cur = conn.cursor()
             cur.execute(sql, (email))
