@@ -1,4 +1,5 @@
-import ogr
+from osgeo import gdal
+from osgeo import ogr
 import shapely.geometry
 import shapely.wkt
 
