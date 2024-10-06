@@ -6,6 +6,14 @@ import logging
 
 from pystac.extensions.eo import EOExtension as eo
 
+from get_wrs import ConvertToWRS
+
+wrs_converter = ConvertToWRS(shapefile="./WRS2_descending.shp")
+
+
+def lat_lng_to_wrs(lat: float, lng: float) -> list:
+    """[{'path': 201, 'row': 25}, {'path': 202, 'row': 25} ...]"""
+    return wrs_converter.get_wrs(lat, lng)
 
 
 def get_with_params(bbox: list, datestr: str, max_cloud_cover: int) -> None:
@@ -49,5 +57,4 @@ def get_with_params(bbox: list, datestr: str, max_cloud_cover: int) -> None:
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
-    get_with_params([-122.2751, 47.5469, -121.9613, 47.7458], "2021-01-01/2021-12-31", 10)
-    input()
+    lat_lng_to_wrs(47.60357, -122.32945)
