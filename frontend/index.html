@@ -47,21 +47,21 @@
           <div class="hidden sm:ml-6 sm:block">
             <div class="flex space-x-4">
               <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
-              <h1 class="py-2 text-base font-medium text-white" aria-current="page">Please Do Not The Map</h1>
+              <h1 class="py-2 font-medium text-white" aria-current="page">Please Do Not The Map</h1>
               <!-- <a href="#" class="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white" aria-current="page">Dashboard</a>
               <a href="#" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Team</a> -->
             </div>
           </div>
         </div>
         <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-          <button type="button" class="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+          <!-- <button type="button" class="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
             <span class="absolute -inset-1.5"></span>
             <span class="sr-only">View notifications</span>
             <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon">
               <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
             </svg>
           </button>
-  
+   -->
           <!-- Profile dropdown -->
           <div x-data="{ open: false }" class="relative ml-3">
             <div>
@@ -122,11 +122,16 @@
       </div>
     </div>
   </nav>
-  
-<div x-data="{ open: false }" class="relative z-10" aria-labelledby="slide-over-title" role="dialog" aria-modal="true">
-    <!-- Button to open the drawer -->
 
-    <button @click="open = true" type="button" class="ml-3 mt-6 rounded-full bg-gray-800 p-1 text-white hover:ring-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+
+  <div x-data="{ open: false, modalOpen: false }" class="relative z-10" aria-labelledby="slide-over-title" role="dialog" aria-modal="true">
+    <!-- Button to open the panel -->
+    <button @click="open = !open" 
+    type="button" 
+    class="ml-3 mt-6 rounded-full bg-gray-800 p-1 text-white hover:ring-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 right-0"
+    aria-expanded="false" 
+    aria-haspopup="true"
+    >
         <svg class="h-8 w-8" viewBox="0 0 24 24">
           <!-- Outer circle filled with white -->
           <circle cx="12" cy="12" r="11" fill="white" />
@@ -139,66 +144,82 @@
         </svg>
         <span class="sr-only">Open menu</span>
       </button>
-      
-    <!-- Background backdrop -->
+
+    <!-- Background backdrop for panel -->
     <div
-    x-show="open" 
-    @click.away="open = false"
-    x-transition:enter="transition ease-out duration-100 transform"
-    x-transition:enter-start="opacity-0 scale-95"
-    x-transition:enter-end="opacity-100 scale-100"
-    x-transition:leave="transition ease-in duration-75 transform"
-    x-transition:leave-start="opacity-100 scale-100"
-    x-transition:leave-end="opacity-0 scale-95"
-    class="fixed inset-0 bg-opacity-75 transition-opacity" 
-    style="display: none;">
-    </div>
+        x-show="open" 
+        x-transition:enter="transition ease-out duration-100 transform"
+        x-transition:enter-start="opacity-0 scale-95"
+        x-transition:enter-end="opacity-100 scale-100"
+        x-transition:leave="transition ease-in duration-75 transform"
+        x-transition:leave-start="opacity-100 scale-100"
+        x-transition:leave-end="opacity-0 scale-95"
+        class="fixed inset-0 bg-opacity-75 transition-opacity" 
+        style="display: none;"
+    ></div>
 
     <!-- Drawer Panel -->
     <div x-show="open" 
-    @click.away="open = false"
-    x-transition:enter="transition ease-out duration-100 transform"
-    x-transition:enter-start="opacity-0 scale-95"
-    x-transition:enter-end="opacity-100 scale-100"
-    x-transition:leave="transition ease-in duration-75 transform"
-    x-transition:leave-start="opacity-100 scale-100"
-    x-transition:leave-end="opacity-0 scale-95"
-    class="fixed inset-0 overflow-hidden">
+        x-transition:enter="transition ease-out duration-100 transform"
+        x-transition:enter-start="opacity-0 scale-95"
+        x-transition:enter-end="opacity-100 scale-100"
+        x-transition:leave="transition ease-in duration-75 transform"
+        x-transition:leave-start="opacity-100 scale-100"
+        x-transition:leave-end="opacity-0 scale-95"
+        class="fixed inset-0 overflow-hidden"
+    >
         <div class="relative inset-0 overflow-hidden">
-            <div class="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10">
+            <div class="pointer-events-auto fixed inset-y-0 right-0 flex max-w-full pl-10">
                 <div class="pointer-events-auto relative w-screen max-w-md">
-                    <div class="relative left-0 top-0 -ml-8 flex pr-2 pt-4 sm:-ml-10 sm:pr-4">
-                        <button @click="open = false" type="button" class="relative rounded-md text-gray-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-white">
-                            <span class="relative -inset-2.5"></span>
-                            <span class="sr-only">Close panel</span>
-                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-                                <path stroke-linecap="round"  stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                        </button>
+                    <div class="relative left-0 mt-18 flex pr-2 sm:-ml-10 sm:pr-4">
+
                     </div>
 
-                    <div class="flex h-full flex-col overflow-y-scroll bg-white py-6 shadow-xl">
+                    <div class="flex rounded h-full flex-col overflow-y-scroll bg-white py-6 shadow-xl">
                         <div class="px-4 sm:px-6">
                             <h2 class="text-base font-semibold leading-6 text-gray-900" id="slide-over-title">Panel Title</h2>
                         </div>
                         <div class="relative mt-6 flex-1 px-4 sm:px-6">
-                            <!-- Your content here -->
-                            <p>This is the content of the drawer.</p>
-                        </div>
+                          <div>
+                            <div>
+                              <label for="coordinates" class="block text-base font-semibold leading-6 text-gray-900">Latitude, Longitude</label>
+                              <div class="relative mt-2 rounded-md shadow-sm">
+                                <input type="text" name="coordinates" id="coordinates" class="block w-full rounded-md border-0 py-1.5 pl-3 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" placeholder="Enter coordinates (e.g., 37.7749, -122.4194)" required>
+                              </div>
+                            </div>
+                          <p>This is the content of the drawer.</p>
+                            <button @click="modalOpen = true" class="mt-4 bg-blue-600 text-white px-4 p-2 rounded">Map it!</button>
+              
+                              <button @click="open = false" class="bg-gray-800 text-white px-4 py-2 rounded">Close</button>
+           
+
+                          </div>
                     </div>
                 </div>
             </div>
-
         </div>
-        
     </div>
-    <!-- <div @click="open = true" class="absolute z-1 inset-y-0 right-0 hidden cursor-ew-resize items-center px-2 sm:flex">
-        <div class="h-8 w-1.5 rounded-full bg-slate-400"></div>
-    </div> -->
- 
-</div>
 
+    <!-- Modal -->
+    <div x-show="modalOpen"
+         x-transition:enter="transition ease-out duration-100"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-75"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         class="fixed inset-0 flex items-center justify-center z-20">
+        <div class="fixed inset-0 bg-black opacity-50"></div>
+        <div class="bg-white rounded-lg p-5 z-30">
+            <h2 class="text-lg font-semibold">Modal Title</h2>
+            <p>This is the content of the modal.</p>
+            <div class="mt-4">
+                <button @click="modalOpen = false" class="bg-gray-800 text-white px-4 py-2 rounded">Close</button>
+            </div>
+        </div>
+    </div>
 </div>
+  
 
 
 <div class="bg-gray-800">
