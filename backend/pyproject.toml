@@ -15,6 +15,8 @@ pystac-client = "^0.8.3"
 planetary-computer = "^1.0.0"
 odc-stac = "^0.3.10"
 matplotlib = "^3.9.2"
+ogr = "^0.50.0"
+shapely = "^2.0.6"
 
 
 [build-system]
