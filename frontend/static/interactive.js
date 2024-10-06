@@ -10,6 +10,9 @@ const markerSvg = `<svg viewBox="-4 0 36 36">
   <circle fill="black" cx="14" cy="14" r="7"></circle>
 </svg>`;
 
+const coordinates = document.getElementById('coordinates');
+
+
 
 function dragElement(elmnt) {
   var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
@@ -60,9 +63,11 @@ function dragElement(elmnt) {
    
     try {
       const { lat, lng } = globe.toGlobeCoords(e.clientX, e.clientY);
-   pinSet[0].lat = lat;
-    pinSet[0].lng = lng;
-    globe.htmlElementsData(pinSet);
+      pinSet[0].lat = lat;
+      pinSet[0].lng = lng;
+      globe.htmlElementsData(pinSet);
+      coordinates.value = `${lat}, ${lng}`
+
 
  
     } catch (e) {
@@ -77,10 +82,11 @@ let pinSet = [
     lat: 0,
     lng: 0,
     alt: 0,
-    color: 'red',
-    size: 20,
+    color: 'white',
+    size: 30,
   }
 ]
+
 
 globe(document.getElementById('globe'), {})
   .globeImageUrl("https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg")
@@ -111,6 +117,14 @@ globe(document.getElementById('globe'), {})
   })
   .htmlTransitionDuration([0]);
 
+
+  coordinates.addEventListener('change', function() {
+    const [lat, lng] = coordinates.value.split(',').map(parseFloat);
+    pinSet[0].lat = lat;
+    pinSet[0].lng = lng;
+    globe.htmlElementsData(pinSet);
+    globe.pointOfView({ lat, lng, altitude: 2.5 }, 500);
+  });
 
 // Apply custom globe material
 const globeMaterial = globe.globeMaterial();
@@ -199,15 +213,6 @@ window.onresize = function(event) {
   globe.width(window.innerWidth);
   globe.height(window.innerHeight);
 };
-
-const coordinates = document.getElementById('coordinates');
-coordinates.addEventListener('change', function() {
-  const [lat, lng] = coordinates.value.split(',').map(parseFloat);
-  pinSet[0].lat = lat;
-  pinSet[0].lng = lng;
-  globe.htmlElementsData(pinSet);
-  globe.pointOfView({ lat, lng, altitude: 2.5 }, 500);
-});
 
 // Get references to the autocomplete input and place info elements
 const autocompleteInput = document.getElementById('locationInput');
