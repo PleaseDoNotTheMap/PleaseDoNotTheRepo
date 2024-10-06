@@ -48,19 +48,18 @@ class App:
 
         ret = request.app['this'].db.add_notification(payload)
         return web.Response(text=str(ret), content_type='text/html')
+    
+    @routes.post('/delete')
+    async def submit(request: aiohttp.web.Request):
+        data = dict(await request.json())
+        ret = request.app['this'].db.remove_notification(data["location"], data["email"])
+        return web.Response(text=str(ret), content_type='text/html')
 
-    @routes.post('/get-data')
-    async def get_data(request: aiohttp.web.Request):
-        data = await request.json()
-
-        results = await request.app['api'].search({
-            'collections': ast.literal_eval(data["collections"]),
-            'bbox': ast.literal_eval(data['bbox']),
-            'datetime': data["datetime"],
-            'query': data["query"]
-        })
-
-        return web.Response(text=json.dumps(results), content_type='application/json')
+    @routes.post('/get-notifications')
+    async def submit(request: aiohttp.web.Request):
+        data = dict(await request.json())
+        ret = request.app['this'].db.get_user_notifications(data["email"])
+        return web.Response(text=str(ret), content_type='text/html')
 
     @routes.get('/search')
     async def websocket_handler(request):

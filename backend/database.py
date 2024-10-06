@@ -71,7 +71,7 @@ class Database:
             """
         with sqlite3.connect(self.db_file) as conn:
             cur = conn.cursor()
-            cur.execute(sql, (email))
+            cur.execute(sql, (email,))
             return cur.fetchall()
 
     def get_within_timeframe(self, start_time, end_time):
