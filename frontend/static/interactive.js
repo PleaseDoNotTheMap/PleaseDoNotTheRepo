@@ -200,3 +200,24 @@ window.onresize = function(event) {
   globe.height(window.innerHeight);
 };
 
+// Get references to the autocomplete input and place info elements
+const autocompleteInput = document.getElementById('locationInput');
+
+// Set up Google Places Autocomplete
+const autocomplete = new google.maps.places.Autocomplete(autocompleteInput);
+
+// Listen for the place_changed event
+google.maps.event.addListener(autocomplete, 'place_changed', function () {
+    const place = autocomplete.getPlace();
+    if (place && place.geometry) {
+        const address = place.formatted_address;
+        const latitude = place.geometry.location.lat();
+        const longitude = place.geometry.location.lng();
+        pinSet[0].lat = latitude;
+        pinSet[0].lng = longitude;
+        globe.htmlElementsData(pinSet);
+        globe.pointOfView({ lat: latitude, lng: longitude, altitude: 0.5 }, 500);
+    }
+});
+
+
