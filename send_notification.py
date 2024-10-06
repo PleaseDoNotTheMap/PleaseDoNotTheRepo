@@ -36,7 +36,7 @@ def calc_dates(date_flyover, date_notify):
 def send_email(name, receiver_email, date_to_notify, date_of_flyover, location):
   sender_email = "pleasedonotthemap@gmail.com"
   password = "tlicxaprtqdrrvcg"
-
+  
   date_notify = datetime.strptime(date_to_notify, "%Y-%m-%d %H:%M:%S")
   date_flyover = datetime.strptime(date_of_flyover, "%Y-%m-%d %H:%M:%S")
 
