@@ -42,6 +42,18 @@ class App:
     async def submit(request: aiohttp.web.Request):
         data = await request.json()
 
+        # NEED PUT THIS IN SIGNUP.html:   const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+        # (name, email, notify_date, flyover_date, location)
+        results = await Database.add_notification((
+            data['username']
+            ,data['email']
+            # ,data[]
+            # .data[]
+            # Still need to configure notify date, and flyover date
+            ,data['location'] 
+        ), data.get('timezone', 'UTC'))
+
         return web.Response(text=json.dumps(data),
                             content_type='application/json')
 
@@ -80,16 +92,6 @@ class App:
 
         return ws
 
-    # async def test(self):
-    #     name = "Ayoung"
-    #     email = "pvgandhi@uwaterloo.ca"
-    #     notify_by = "2024-10-05 17:04:25"
-    #     flyover_on = "2025-04-15 12:55:26"
-    #     location = "Paris, Country"
-    #
-    #     notification = (name, email, notify_by, flyover_on, location)
-    #     notif_id = self.db.add_notification(notification)
-
     async def _context(self, app):
         self.session = aiohttp.ClientSession()
         app['api'] = await API(self.session).start()
@@ -111,7 +113,7 @@ class App:
             cors.add(route)
 
     def run(self):
-        self.scheduler.add_job(self.db.send_notifications, 'interval', minutes=1)
+        self.scheduler.add_job(self.db.send_notifications, 'interval', minutes=60)
         self.scheduler.start()
 
         web.run_app(self.app)
