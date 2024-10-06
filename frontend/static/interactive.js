@@ -3,6 +3,7 @@ import * as THREE from '//unpkg.com/three/build/three.module.js';
 
 import {MTLLoader} from 'three/addons/loaders/MTLLoader.js';
 import {OBJLoader} from 'three/addons/loaders/OBJLoader.js';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 
 const globe = Globe({animateIn:false});
 const markerSvg = `<svg viewBox="-4 0 36 36">
@@ -11,8 +12,6 @@ const markerSvg = `<svg viewBox="-4 0 36 36">
 </svg>`;
 
 const coordinates = document.getElementById('coordinates');
-
-
 
 function dragElement(elmnt) {
   var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
@@ -98,11 +97,12 @@ globe(document.getElementById('globe'), {})
   .lineHoverPrecision(0)
   .pointLng(d => d[0])
   .pointLat(d => d[1])
+  .pointAltitude(0.1)
   .objectLat('lat')
   .objectLng('lng')
   .objectAltitude('alt')
+  .objectRotation(d => d.rot)
   .objectFacesSurface(false)
-  .objectLabel('name')
   .htmlElementsData(pinSet)
   .htmlElement(d => {
     const el = document.createElement('div');
@@ -167,33 +167,39 @@ const addClouds = function (){
 
 addClouds();
 
+let sat = [{
+  lat: 0,
+  lng: 0,
+  alt: 0.1,
+  name: 'Landsat 9',
+  rot: { x: 0, y: 90, z: 0},
+}];
+
+
 const renderSatellite = function() {
-  const mtlLoader = new MTLLoader();
-  mtlLoader.load('/static/pleasedontsatellite.mtl', (mtl) => {
-    mtl.preload();
-    const objLoader = new OBJLoader();
-    objLoader.setMaterials(mtl);
-    objLoader.load('/static/pleasedontsatellite.obj', (obj) => {
-      globe.objectThreeObject(obj);
-      globe.objectsData([{
-        lat: 0,
-        lng: 0,
-        alt: 1,
-        lbl: 'Satellite',
-      }]);
+//  const mtlLoader = new MTLLoader();
+  const loader = new GLTFLoader();
+  loader.load('/static/pleasedonotcat.glb', (obj) => {
+      globe.objectThreeObject(obj.scene);
     }, undefined, function(error) {
       console.error(error);
     });
-  });
 }
 renderSatellite();
+globe.objectsData(sat);
+
+let allPaths = null;
+let path = null;
+let pathIndex = 1;
+let allPathsIndex = 1;
 
 const getPaths = function() {
   fetch("/static/paths.json")
     .then(response => response.json())
     .then(data => {
-      console.log(data[1]);
-      globe.pointsData(data[1]);
+      allPaths = data;
+      path = data[1];
+      globe.pointsData(path);
     });
 }
 
@@ -235,4 +241,19 @@ google.maps.event.addListener(autocomplete, 'place_changed', function () {
     }
 });
 
-
+window.setInterval(function(){
+  // Update satellite location
+  if (pathIndex >= path.length) {
+    path = allPaths[++allPathsIndex];
+    globe.pointsData(path);
+    pathIndex = 1;
+    sat[0].lat = path[1][1];
+    sat[0].lng = path[1][0];
+    globe.objectsData(sat);
+    return;
+  }
+  sat[0].lng = path[pathIndex][0];
+  sat[0].lat = path[pathIndex][1];
+  pathIndex++;
+  globe.objectsData(sat);
+}, 10);
