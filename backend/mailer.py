@@ -119,7 +119,7 @@ class Mailer:
         {
             "from": "17783905789",
             "to": f"{phone_number}",
-            "text":f"""Heads up {name}! NASA's Landsat satellite will be flying over {location} in {time_difference} on {datetime.strftime(date_notify, "%B %d, %Y")} at {datetime.strftime(date_notify, "%H:%M:%S")}. Check out Please Do Not the Map for more information: https://pleasedonotthemap.space""",
+            "text":f"""Heads up {name}! NASA's Landsat satellite will be flying over {location} in {time_difference} on {datetime.strftime(date_notify, "%B %d, %Y")}. Check out Please Do Not the Map for more information: https://pleasedonotthemap.space""",
           }
       )
 

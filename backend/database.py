@@ -32,18 +32,18 @@ class Database:
             conn.commit()
 
     def add_notification(self, notification: tuple, time_zone: str):
-        sql = """INSERT INTO notifications(name, email, notify_date, flyover_date, location)
+        sql = """INSERT INTO notifications(name, email, phone_number, notify_date, flyover_date, location)
                  VALUES(?, ?, ?, ?, ?)"""
         
         # CONVERT NOTIFICATION AND FLY DATES INTO "%Y-%m-%d %H:%M:%S"
 
-        not_date = datetime.strptime(notification[2], "%Y-%m-%d %H:%M:%S")
+        not_date = datetime.strptime(notification[3], "%Y-%m-%d %H:%M:%S")
         user_time = time_zone.localize(datetime(not_date.year, not_date.month, not_date.day, 9, 0))
-        notification[2] = user_time
-
-        fly_date = datetime.strptime(notification[3], "%Y-%m-%d %H:%M:%S")
-        user_time = time_zone.localize(datetime(fly_date.year, fly_date.month, fly_date.day, 9, 0))
         notification[3] = user_time
+
+        fly_date = datetime.strptime(notification[4], "%Y-%m-%d %H:%M:%S")
+        user_time = time_zone.localize(datetime(fly_date.year, fly_date.month, fly_date.day, 9, 0))
+        notification[4] = user_time
 
         with sqlite3.connect(self.db_file) as conn:
             cur = conn.cursor()
