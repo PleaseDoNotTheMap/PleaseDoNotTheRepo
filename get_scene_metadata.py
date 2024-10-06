@@ -1,8 +1,13 @@
+from pystac_client import Client
 import json
 import requests
 import sys
 import threading
 import datetime
+import csv
+LONGITU = 35
+LATITU= 45
+
 
 maxthreads = 5  # Threads count for parallel metadata requests
 sema = threading.Semaphore(value=maxthreads)
@@ -61,18 +66,49 @@ def getMetadata(datasetName, entityId, apiKey):
 
     return sendRequest(serviceUrl + "scene-metadata", payload, apiKey)
 
+all_metadata = []
 def processSceneMetadata(datasetName, entityId, apiKey):
     sema.acquire()
     try:
         metadata = getMetadata(datasetName, entityId, apiKey)
         if metadata:
             print(f"Scene Metadata for {entityId}:\n", json.dumps(metadata, indent=2))
+            all_metadata.append(metadata)
         else: 
             print("Can't find scene metadata")
         sema.release()
     except Exception as e:
         print(f"Failed to retrieve metadata for {entityId}. Error: {e}")
         sema.release()
+        
+        
+def getIds(long, lati):
+    LandsatSTAC = Client.open("https://landsatlook.usgs.gov/stac-server", headers=[])
+
+    def BuildSquare(lon, lat, delta):
+        c1 = [lon + delta, lat + delta]
+        c2 = [lon + delta, lat - delta]
+        c3 = [lon - delta, lat - delta]
+        c4 = [lon - delta, lat + delta]
+        geometry = {"type": "Polygon", "coordinates": [[ c1, c2, c3, c4, c1 ]]}
+        return geometry
+
+    geometry = BuildSquare(long, lati, 0.01)
+    timeRange = '2024-09-01/2024-10-06'
+    LandsatSearch = LandsatSTAC.search ( 
+        intersects = geometry,
+        datetime = timeRange,
+        query =  ['eo:cloud_cover95'],
+        collections = ["landsat-c2l2-sr"] )
+
+    Landsat_items = [i.to_dict() for i in LandsatSearch.get_items()]
+    print(f"{len(Landsat_items)} Landsat scenes fetched")
+
+    ids = []
+    for item in Landsat_items:
+        ids.append(item['id'].replace('_SR', ''))
+        
+    return ids
 
 def runMetadataRetrieval(threads, datasetName, entityId, apiKey):
     thread = threading.Thread(target=processSceneMetadata, args=(datasetName, entityId, apiKey))
@@ -96,19 +132,26 @@ if __name__ == '__main__':
     
     # Use dataset and entityId as per your needs
     datasetName = "landsat_ot_c2_l2"
-    entityIds = ["LC08_L2SP_225084_20210512_20210524_02_T1"]  # Add more entityIds if needed
-
-    # entityIds = ["LC08_L2SP_012025_20201231_20210308_02_T1"]
     
-    for entityId in entityIds:
+    ids = getIds(LONGITU, LATITU)
+    if not ids:
+        print("No IDs found.")
+        sys.exit()
+        
+    for entityId in ids:  # This directly iterates through the list of IDs
         runMetadataRetrieval(threads, datasetName, entityId, apiKey)
-    
+          # Add more entityIds if needed
+
+        # entityIds = ["LC08_L2SP_012025_20201231_20210308_02_T1"]
+         
     # Wait for all threads to finish
     for thread in threads:
         thread.join()
         
     print("Complete Metadata Retrieval")
                 
+    with open ('scene_metadata.json', 'w')as json_file:
+        json.dump(all_metadata, json_file, indent=2)
     # Logout so the API Key cannot be used anymore
     endpoint = "logout"  
     if sendRequest(serviceUrl + endpoint, None, apiKey) is None:        
