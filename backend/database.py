@@ -38,9 +38,19 @@ class Database:
             conn.commit()
             return cur.lastrowid
 
-    def remove_notification(self, notif_id):
-        sql = """DELETE FROM notifications WHERE id = ?"""
-        self._exec(sql, (notif_id,))
+    def remove_notification(self, location, email):
+        sql = """DELETE FROM notifications WHERE location = ?
+                AND email = ?""" 
+        self._exec(sql, (location,email))
+    
+    def get_user_notifications(self, email):
+        sql = """SELECT * FROM notifications
+                WHERE email = ?;
+            """
+        with sqlite3.connect(self.db_file) as conn:
+            cur = conn.cursor()
+            cur.execute(sql, (email))
+            return cur.fetchall()
 
     def get_within_timeframe(self, start_time, end_time):
         """ Fetch notifications that should be sent within a specific timeframe """
