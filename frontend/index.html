@@ -361,11 +361,25 @@
 
             <div class="sm:col-span-4">
               <label for="locationInput">Where's the flyover location you'd like to be notified of?</label>
-           
+              
               <div class="sm:col-span-4">
                 <input class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"  type = "text" placeholder=" Lat 42.497971, Long -92.382751" id="locationInput" x-model="location" required></textarea>
              </div>
             </div>
+
+            <div class="sm:col-span-4">
+            <label for="exampleRecipientInput">When would you like to be notified?</label>
+            
+            
+            <div class="sm:col-span-4">
+ 
+            <select x-model="dropdown" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" id="exampleRecipientInput">
+            <option value='0'>I do not want to get notified</option>
+            <option value='1'>A day before</option>
+            <option value='2'>A week before</option>
+            </select>
+  </div>
+  </div>
 
 
              <div class="mt-4">
@@ -386,32 +400,72 @@
           <script>
             function formHandler() {
                       return {
-                          email: '',
-                          username: '',
-                          location: '',
-                          phoneNumber: '',
+                          email: null,
+                          name: null,
+                          location: null,
+                          lat: null,
+                          long: null,
+                          addressPretty: null,
+                          addressComponents: null,
+                          phoneNumber: null,
+                          dropdown: null,
                           successMessage: false,
+          
+                          init() {
+                              this.initAutocomplete();
+                          },
+          
+                          initAutocomplete() {
+                              const autocompleteInput = document.getElementById('locationInput');
+                              this.placeAutocomplete = new google.maps.places.Autocomplete(autocompleteInput);
+          
+                              this.placeAutocomplete.addListener('place_changed', () => {
+                                  const place = this.placeAutocomplete.getPlace();
+                                  if (place && place.geometry) {
+                                      console.log(place)
+                                      this.lat = place.geometry.location.lat()
+                                      this.long = place.geometry.location.lng()
+                                      this.addressPretty = place.formatted_address
+                                      this.addressComponents = place.address_components
+                                      }
+                                  });
+                          },
           
                           async submitForm() {
                               try {
                                   console.log(this.phoneNumber)
           
-                                  const response = await axios.get(`localhost:8080/`, {
+                                  let response = await axios.get(`http://0.0.0.0:8080/`);
+                                  console.log(response)
           
-                                  });
+                                  let payload = {
+                                      name: this.name,
+                                      email: this.email,
+                                      phone_number: this.phoneNumber,
+                                      notify_date: this.dropdown,
+                                      flyover_date: 0,
+                                      lat: this.lat,
+                                      long: this.long,
+                                      address_pretty: this.addressPretty,
+                                      address_components: this.addressComponents
+                                  }
+          
+                                  response = await axios.post('http://0.0.0.0:8080/submit', payload)
+                                  console.log(response)
           
                                   this.successMessage = true;
           
                                   // Reset form fields
                                   this.email = null;
-                                  this.username = null;
+                                  this.name = null;
                                   this.location = null;
                                   this.phoneNumber = null;
+                                  this.dropdown = null;
           
                               } catch (error) {
                                   console.error('Error submitting form:', error);
                               }
-                          }
+                          },
                       }
                   }
             </script>
