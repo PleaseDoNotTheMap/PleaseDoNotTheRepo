@@ -21,6 +21,7 @@
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <link rel="stylesheet" href="css/normalize.css">
   <link rel="stylesheet" href="css/skeleton.css">
+  
 
   <!-- Favicon
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
@@ -29,8 +30,9 @@
 </head>
 <body>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.7/axios.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-  <script src="signup.js" defer></script>
+  <!-- <script src="main.js" defer></script> -->
   <!-- Primary Page Layout
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
 <!-- .container is main centered wrapper -->
@@ -40,44 +42,44 @@
   <div class="row">
     <div class="column" style="margin-top: 25%">
       <h4>Welcome to Please Do Not The Map!</h4>
-      <p>This paragraph is just a placeholder for us. Heat it up!</p>
+      <p>This paragraph is just a placehodler for all of us. Heat it up!</p>
     </div>
   </div>
  
-<form class="form">
+
+<div x-data="model" >
+<form @submit="submitForm" data-collection="allowedURL">
   <div class="row">
-    <div class="six columns">
-      <label for="exampleEmailInput">Your email</label>
-      <input class="u-full-width" type="email" placeholder="PleaseDoNotMap@spacemail.com" id="exampleEmailInput">
+    <div class="four columns">
+      <label for="exampleEmailInput">Your Email</label>
+      <input class="u-full-width" type="email" placeholder="cat@spacemail.com" id="exampleEmailInput" x-text="email" required>
     </div>
 
-    <div class="six columns">
-      <label for="exampleUsernameInput">Your username</label>
-      <input class="u-full-width" type="text" placeholder="Kitten" id="exampleusername">
+    <div class="four columns">
+      <label for="exampleUsernameInput">Your Username</label>
+      <input class="u-full-width" type="text" placeholder="Kitten" id="exampleUsernameInput" x-text="username" required>
+    </div>
+
+    <div class="four columns">
+      <label for="examplePhoneInput">Your Phone Number</label>
+      <input class="u-full-width" type="tel" placeholder="111-222-3333" id="examplePhoneInput" x-text="phonenumber" required>
     </div>
   </div>
 
   
-  <label for="exampleMessage">Well how about you tell us your location?</label>
-  <input class="u-full-width" type = "text" placeholder="Lat 42.497971, Long -92.382751" id="examplelocation"></textarea>
+  <label for="examplelocation">Well how about you tell us your location?</label>
+  <input class="u-full-width" type = "text" placeholder="Lat 42.497971, Long -92.382751" id="examplelocation" x-text="location" required></textarea>
   
   
-  <label for="exampleRecipientInput">When would you like to be notified?</label>
-  <label class="example-send-yourself-copy">
-    <input type="checkbox">
-    <span class="label-body">No! I don't want notification!</span>
-    <input type="checkbox">
-    <span class="label-body">Before a day!</span>
-    <input type="checkbox">
-    <span class="label-body">Before a week!</span>
-    <input type="checkbox">
-    <span class="label-body">Before a month?</span>
-    
-  </label>
+  <!-- <label for="exampleRecipientInput">When would you like to be notified?</label>
+  <select x-data="dropdown" class="u-full-width" id="exampleRecipientInput">
+    <option value="No Notification">I do not want to get notified</option>
+    <option value="Notification a day before">A day before</option>
+    <option value="Notification a month before">A month before</option>
+  </select> -->
 
-  <input class ="u-full-width" class="button-primary" type="submit" value="Submit">
+  <button class ="u-half-width button-primary" type="submit">Submit</button>
 
-  
   <!-- <label class="example-send-yourself-copy">
     <input type="checkbox">
     <span class="label-body">I would like to receive an email notification</span>
@@ -85,9 +87,46 @@
    -->
   
 </form>
+
+
+</div>
+
 </div>
 
 
+<script>// Adding Alpine.js data model globally
+  document.addEventListener('alpine:init', () => {
+      Alpine.data('model', () => ({
+          // form: {
+          //     email: '',
+          //     username: '',
+          //     location: '',
+          //     selectedOption: '',
+          //     phonenumber: ''
+          // },
+          allowedURL: [],
+          email: '',
+          username: '',
+          location: '',
+          // dropdown: '',
+          phonenumber: '',
+          async submitForm() { 
+              try {
+                  const response = await axios.post('http://localhost:8080/submit', { // Ensure the URL is correct
+                      type: "message",
+                      // data: this.form,
+                        id: 'clientID', // Replace with your actual clientID logic
+                      date: Date.now(),
+                  });
+  
+                  console.log('Response from server:', response.data);
+              } catch (error) {
+                  console.error('Error sending data:', error);
+              }
+          }
+      }));
+  });
+  </script>
 <!-- Always wrap checkbox and radio inputs in a label and use a <span class="label-body"> inside of it -->
 
 <!-- Note: The class .u-full-width is just a utility class shorthand for width: 100% -->

@@ -135,7 +135,11 @@ body {
   font-weight: 400;
   font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #222; }
-
+  
+  .bg-gradient{
+    background: rgb(16,0,105);
+    background: linear-gradient(90deg, rgba(16,0,105,1) 0%, rgba(15,99,168,1) 35%, rgba(117,255,235,1) 100%); 
+  }
 
 /* Typography
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
@@ -284,6 +288,7 @@ select:focus {
   outline: 0; }
 label,
 legend {
+  font-family: Arial, Helvetica, sans-serif;
   display: block;
   margin-bottom: .5rem;
   font-weight: 600; }
@@ -353,6 +358,7 @@ td:last-child {
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 button,
 .button {
+  font-family: Arial, Helvetica, sans-serif;
   margin-bottom: 1rem; }
 input,
 textarea,
@@ -379,6 +385,13 @@ form {
 .u-max-full-width {
   max-width: 100%;
   box-sizing: border-box; }
+.u-half-width {
+  width: 30%;
+  position: relative;
+  left: 50%;
+  transform: translate(-50%);
+  box-sizing: border-box;
+}
 .u-pull-right {
   float: right; }
 .u-pull-left {
