@@ -667,6 +667,9 @@ video {
   top: 0px;
   bottom: 0px;
 }
+.top-custom {
+  top:10px;
+}
 
 .left-0 {
   left: 0px;
@@ -702,7 +705,7 @@ video {
 }
 
 .mt-18 {
-  margin-top: 30rem;
+  margin-top: 25rem;
 }
 
 .ml-6 {
@@ -972,7 +975,7 @@ video {
 
 .text-base {
   font-size: 1.5rem;
-  line-height: 2rem;
+  line-height: 2rem !important;
 }
 
 .text-sm {

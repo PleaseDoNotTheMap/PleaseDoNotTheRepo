@@ -11,6 +11,10 @@
    <!-- Favicon
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <link rel="icon" type="image/png" href="images/Favicon.png">
+
+  <script type="module" src="https://unpkg.com/@googlemaps/extended-component-library@0.6"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCunx3DEkoYwHYb0RYa4hK6wZYDug9Z2qI&libraries=places"></script>
+
 </head>
 <body>
 
@@ -124,14 +128,58 @@
   </nav>
 
 
-  <div x-data="{ open: false, modalOpen: false }" class="relative z-10" aria-labelledby="slide-over-title" role="dialog" aria-modal="true">
+
+
+
+
+
+
+  <div x-data="{ open: false, modalOpen: false }" class="relative" aria-labelledby="slide-over-title" role="dialog" aria-modal="true">
     <!-- Button to open the panel -->
-    <button @click="open = !open" 
+    
+  <gmpx-api-loader key="AIzaSyCunx3DEkoYwHYb0RYa4hK6wZYDug9Z2qI" solution-channel="GMP_GE_placepicker_v1"></gmpx-api-loader>
+  <div>
+    <label for="price" class="block text-sm font-medium leading-6 text-black-700">d</label>
+    <div class="block text-sm relative mt-2 rounded-md shadow-sm">
+
+      <input class="rounded-md mt-6 ml-6 px-4 py-3 border-2 border-gray-300 shadow-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition duration-300 ease-in-out bg-gradient-to-r from-white to-gray-100 text-black-700 placeholder-gray-400" 
+      type="location" 
+      placeholder="Search Location" 
+      id="locationInput">  
+      <div class="absolute inset-y-0 right-0 flex items-center">
+        <label for="currency" class="sr-only">Currency</label>
+      </div>
+    </div>
+  </div>
+  
+
+  <script>
+    // Get references to the autocomplete input and place info elements
+    const autocompleteInput = document.getElementById('locationInput');
+
+    // Set up Google Places Autocomplete
+    const autocomplete = new google.maps.places.Autocomplete(autocompleteInput);
+
+    // Listen for the place_changed event
+    google.maps.event.addListener(autocomplete, 'place_changed', function () {
+        const place = autocomplete.getPlace();
+        if (place && place.geometry) {
+            const address = place.formatted_address;
+            const latitude = place.geometry.location.lat();
+            const longitude = place.geometry.location.lng();
+            const mesg = "Address: " + address + "\nLatitude: " + latitude + "\nLongitude: " + longitude;
+            console.log(mesg);
+        }
+    });
+</script>
+
+<button @click="open = !open" 
     type="button" 
-    class="ml-3 mt-6 rounded-full bg-gray-800 p-1 text-white hover:ring-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 right-0"
+    class=" ml-6 mt-6 rounded-full  text-white hover:ring-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 right-0"
     aria-expanded="false" 
     aria-haspopup="true"
     >
+    
         <svg class="h-8 w-8" viewBox="0 0 24 24">
           <!-- Outer circle filled with white -->
           <circle cx="12" cy="12" r="11" fill="white" />
