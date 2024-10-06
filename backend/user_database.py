@@ -34,7 +34,7 @@ def create_table(db):
         id INTEGER PRIMARY KEY, 
         name text NOT NULL, 
         email TEXT,
-        phone number TEXT,
+        phone_number TEXT,
         notify_date DATETIME,
         flyover_date DATETIME,
         location TEXT,
@@ -47,8 +47,8 @@ def create_table(db):
             conn.commit()
 
 def add_notification(conn, notification):
-    sql = ''' INSERT INTO notifications(name,email,notify_date,flyover_date,location,type)
-              VALUES(?,?,?,?,?,?) '''
+    sql = ''' INSERT INTO notifications(name,email,phone_number,notify_date,flyover_date,location,type)
+              VALUES(?,?,?,?,?,?,?) '''
     cur = conn.cursor()
     cur.execute(sql, notification)
     conn.commit()
@@ -69,12 +69,13 @@ def add_to_database():
         # fix datetimes
         name = "Ayoung"
         email = "pvgandhi@uwaterloo.ca"
+        phone_number = "NULL"
         notify_by = "2024-10-05 17:04:25"
         flyover_on = "2025-12-15 12:55:26"
         location = "Paris, Country"
-        type = "email"
+        not_type = "email"
 
-        notification = (name, email, notify_by, flyover_on, location, type)
+        notification = (name, email, phone_number, notify_by, flyover_on, location, not_type)
         notif_id = add_notification(conn, notification)
 
         return
@@ -101,9 +102,9 @@ def send_notifications():
             print(row)
             
             if(row[6] == "email"):
-                send_email(row[1], row[2], row[3], row[4], row[5])
+                send_email(row[1], row[2], row[4], row[5], row[6])
             elif(row[6] == "sms"):
-                send_SMS(row[1], row[2], row[3], row[4], row[5])
+                send_SMS(row[1], row[3], row[4], row[5], row[6])
 
             print(f"Removing: {row}")
             remove_notification(conn=conn, id=row[0]) # pass notification id to remove 
@@ -125,9 +126,6 @@ if __name__ == '__main__':
 
     except (KeyboardInterrupt, SystemExit):
         scheduler.shutdown()
-
-
-
 
 # PUWRW4SHLU996XH5XTLJB8E2
 

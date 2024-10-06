@@ -124,6 +124,10 @@ def send_email(name, receiver_email, date_to_notify, date_of_flyover, location):
 
 def send_SMS(name, phone_number, date_to_notify, date_of_flyover, location):
   try:
+    symbols = ['-', '(', ')', '+']
+    for symbol in symbols:
+        phone_number = phone_number.replace(symbol, '')
+    
     date_notify = datetime.strptime(date_to_notify, "%Y-%m-%d %H:%M:%S")
     date_flyover = datetime.strptime(date_of_flyover, "%Y-%m-%d %H:%M:%S")
 
