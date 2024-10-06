@@ -1,6 +1,7 @@
 import sqlite3
 from datetime import datetime, timedelta
 from send_notification import send_email, send_SMS
+from landsat_sr import get_next_acq
 
 
 class Database:
@@ -33,13 +34,26 @@ class Database:
     def add_notification(self, notification: tuple):
         sql = """INSERT INTO notifications(name, email, phone_number, notify_date, flyover_date, location)
                  VALUES(?, ?, ?, ?, ?, ?)"""
+        
+        flyover_info = get_next_acq(notification[6], notification[7])
+
+        landsat8 = flyover_info.get("landsat_8", {}).get("date")
+        landsat9 = flyover_info.get("landsat_9", {}).get("date")
+
+        if landsat8 and landsat9:
+            flyover_date = min(landsat8, landsat9)
+        elif landsat8:  # If only landsat8 date is present
+            flyover_date = landsat8
+        elif landsat9:  # If only landsat9 date is present
+            flyover_date = landsat9
 
         if(notification[3] == 1):
-            notify_time = notification[4] - timedelta(days=1)
+            notify_time = flyover_date - timedelta(days=1)
         elif(notification[3] == 2):
-            notify_time = notification[4] - timedelta(days=7)
+            notify_time = flyover_date - timedelta(days=7)
 
         notification[3] = notify_time
+        notification[4] = flyover_date
 
         with sqlite3.connect(self.db_file) as conn:
             cur = conn.cursor()
