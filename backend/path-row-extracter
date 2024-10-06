@@ -1,0 +1,23 @@
+#takes in a json file and extracts the PATH and ROW values from the attributes
+#change json_file_path to path of json file you want to extract from
+
+import json
+
+json_file_path = 'backend\\test.json'
+
+
+# Load the JSON data from the original file
+with open(json_file_path, 'r') as file:
+    data = json.load(file)
+
+new_data = []
+
+# Extract the 'PATH' and 'ROW' values and format them as new properties
+for feature in data['features']:
+    properties = {
+        "PATH": feature['attributes']['PATH'],
+        "ROW": feature['attributes']['ROW']
+    }
+    new_data.append(properties)
+
+print(new_data)

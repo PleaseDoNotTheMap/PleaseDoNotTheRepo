@@ -10,6 +10,7 @@ const markerSvg = `<svg viewBox="-4 0 36 36">
   <circle fill="black" cx="14" cy="14" r="7"></circle>
 </svg>`;
 
+
 function dragElement(elmnt) {
   var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
   var startTop = 0;
@@ -86,9 +87,11 @@ globe(document.getElementById('globe'), {})
   .backgroundImageUrl('https://unpkg.com/three-globe/example/img/night-sky.png')
   .polygonCapColor(feat => 'rgba(200, 0, 0, 0.6)')
   .polygonSideColor(() => 'rgba(0, 100, 0, 0.05)')
-  .polygonAltitude(0.06)
+  .polygonAltitude(5)
   .polygonStrokeColor(() => '#111')
   .lineHoverPrecision(0)
+  .pointLng(d => d[0])
+  .pointLat(d => d[1])
   .objectLat('lat')
   .objectLng('lng')
   .objectAltitude('alt')
@@ -108,20 +111,30 @@ globe(document.getElementById('globe'), {})
   })
   .htmlTransitionDuration([0]);
 
-const getScenes = async function() {
-  fetch("/static/small.geojson")
-    .then(response => response.json())
-    .then(data => {
-      globe.polygonsData(data);
-    });
-}
 
+// Apply custom globe material
+const globeMaterial = globe.globeMaterial();
+globeMaterial.bumpScale = 15;
+
+new THREE.TextureLoader().load('https://unpkg.com/three-globe/example/img/earth-water.png', texture => {
+  globeMaterial.specularMap = texture;
+  globeMaterial.specular = new THREE.Color('grey');
+  globeMaterial.shininess = 20;
+});
+
+// Manually add a directional light
+const scene = globe.scene(); // Access globe's internal Three.js scene
+
+const directionalLight = globe.lights().find(light => light.type === 'DirectionalLight');
+directionalLight.position.set(1, 1, 1); // Adjust position as needed
+scene.add(directionalLight);
+
+// const ambientLight = new THREE.AmbientLight(0xffffff, 5); // Soft white light
+// scene.add(ambientLight);
 const addClouds = function (){
   const CLOUD_URL = "../images/clouds.png"
   const ALTITUDE = 0.004;
   const cloud_rotation_v = -0.006;
-
-
 
   new THREE.TextureLoader().load(CLOUD_URL, cloudsTexture => {
     const clouds = new THREE.Mesh(
@@ -131,15 +144,11 @@ const addClouds = function (){
     );
     globe.scene().add(clouds);
 
-
-
     (function rotateClouds(){
       clouds.rotation.y += cloud_rotation_v * Math.PI /180;
       requestAnimationFrame(rotateClouds);
     })();
-
   });
-
 }
 
 addClouds();
@@ -165,6 +174,19 @@ const renderSatellite = function() {
 }
 renderSatellite();
 
+const getPaths = function() {
+  fetch("/static/paths.json")
+    .then(response => response.json())
+    .then(data => {
+      console.log(data[1]);
+      globe.pointsData(data[1]);
+    });
+}
+
+getPaths();
+
+
+
 const rotate = function(){
   globe.controls().autoRotate = true;
   globe.controls().autoRotateSpeed = 0.4;
@@ -178,24 +200,3 @@ window.onresize = function(event) {
   globe.height(window.innerHeight);
 };
 
-// Apply custom globe material
-const globeMaterial = globe.globeMaterial();
-globeMaterial.bumpScale = 15;
-
-new THREE.TextureLoader().load('https://unpkg.com/three-globe/example/img/earth-water.png', texture => {
-  globeMaterial.specularMap = texture;
-  globeMaterial.specular = new THREE.Color('grey');
-  globeMaterial.shininess = 20;
-});
-
-// Manually add a directional light
-const scene = globe.scene(); // Access globe's internal Three.js scene
-
-
-const directionalLight = globe.lights().find(light => light.type === 'DirectionalLight');
-directionalLight.position.set(1, 1, 1); // Adjust position as needed
-scene.add(directionalLight);
-
-
-// const ambientLight = new THREE.AmbientLight(0xffffff, 5); // Soft white light
-// scene.add(ambientLight);
