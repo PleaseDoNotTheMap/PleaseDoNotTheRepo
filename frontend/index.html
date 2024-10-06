@@ -9,6 +9,9 @@
    <!-- Favicon
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <link rel="icon" type="image/png" href="images/Logo.png">
+  <!-- Set up Places API -->
+  <script type="module" src="https://unpkg.com/@googlemaps/extended-component-library@0.6"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCunx3DEkoYwHYb0RYa4hK6wZYDug9Z2qI&libraries=places"></script>
 </head>
 <body style="background-color: rgb(100, 150, 200);">
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -121,8 +124,32 @@
         </div>
       </nav>
 
+  
+  <gmpx-api-loader key="AIzaSyCunx3DEkoYwHYb0RYa4hK6wZYDug9Z2qI" solution-channel="GMP_GE_placepicker_v1"></gmpx-api-loader>
+  
+  <input class="mt-6 ml-6 px-4 py-3" type="location" placeholder="Search Location" id="locationInput">
 
-  <input class="mt-6 ml-6 px-8 py-3" type="location" placeholder="Search Location" id="locationInput">
+  <script>
+    // Get references to the autocomplete input and place info elements
+    const autocompleteInput = document.getElementById('locationInput');
+
+    // Set up Google Places Autocomplete
+    const autocomplete = new google.maps.places.Autocomplete(autocompleteInput);
+
+    // Listen for the place_changed event
+    google.maps.event.addListener(autocomplete, 'place_changed', function () {
+        const place = autocomplete.getPlace();
+        if (place && place.geometry) {
+            const address = place.formatted_address;
+            const latitude = place.geometry.location.lat();
+            const longitude = place.geometry.location.lng();
+            const mesg = "Address: " + address + "\nLatitude: " + latitude + "\nLongitude: " + longitude;
+            console.log(mesg);
+        }
+    });
+</script>
+
+
   <img class="mt-2 ml-6 h-8 w-auto" src="images/recent.png" alt="">
   <img class="mt-2 ml-6 h-8 w-auto" src="images/saved.png" alt="">
 </body>
