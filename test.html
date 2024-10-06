@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download API Data as CSV</title>
+</head>
+<body>
+    <h1>Download Data from API as CSV</h1>
+    <button id="downloadBtn">Download Data as CSV</button>
+
+    <script>
+        async function fetchDataAndDownloadCSV() {
+            try {
+                // Step 1: Fetch data from an API (replace URL with your API endpoint)
+                const response = await fetch('https://yesno.wtf/api?ref=public_apis'); // Replace with your API URL
+                const data = await response.json();
+
+                console.log(data);
+
+                // Step 2: Convert JSON to CSV
+                const csv = jsonToCSV(data);
+
+                console.log("Data has been converted!");
+
+                // Step 3: Create a Blob object from the CSV data
+                const blob = new Blob([csv], { type: 'text/csv' });
+
+                // Step 4: Create a temporary link element
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'data.csv';  // Set the file name for the download
+
+                // Step 5: Programmatically click the link to trigger download
+                document.body.appendChild(a);
+                a.click();
+
+                // Step 6: Clean up - remove link and release the object URL
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+
+        // Helper function to convert JSON array to CSV format
+        // function jsonToCSV(data) {
+        //     const headers = Object.keys(data[0]);
+
+        //     const csvRows = [];
+
+        //     // Add the headers row
+        //     csvRows.push(headers.join(','));
+
+        //     // Add the data rows
+        //     for (const row of data) {
+        //         const values = headers.map(header => {
+        //             const escapedValue = ('' + row[header]).replace(/"/g, '\\"');
+        //             return `"${escapedValue}"`;  // Wrap each value in double quotes
+        //         });
+        //         csvRows.push(values.join(','));
+        //     }
+
+        //     // Join rows into a single CSV string
+        //     return csvRows.join('\n');
+        // }
+
+        // Singular data (not likely)
+        function jsonToCSV(data) {
+            const csvRows = [];
+
+            // Handle the case where data is a single object
+            const headers = Object.keys(data);
+            const values = Object.values(data);
+
+            // Add the headers row
+            csvRows.push(headers.join(','));
+
+            // Add the values row
+            const escapedValues = values.map(value => {
+                const escapedValue = ('' + value).replace(/"/g, '\\"');
+                return `"${escapedValue}"`;  // Wrap each value in double quotes
+            });
+            csvRows.push(escapedValues.join(','));
+
+            // Join rows into a single CSV string
+            return csvRows.join('\n');
+        }
+
+        // Add event listener to the download button
+        document.getElementById('downloadBtn').addEventListener('click', fetchDataAndDownloadCSV);
+    </script>
+</body>
+</html>
