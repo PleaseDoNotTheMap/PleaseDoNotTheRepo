@@ -10,12 +10,11 @@ User=deploy
 Group=deploy
 RuntimeDirectory=gunicorn
 WorkingDirectory=/home/deploy/PleaseDoNotTheRepo/backend
-ExecStart=gunicorn
+ExecStart=pipx run --system-site-packages gunicorn main:app_factory
 ExecReload=/bin/kill -s HUP $MAINPID
 KillMode=mixed
 TimeoutStopSec=5
 PrivateTmp=true
-ProtectSystem=strict # IF it doesn't work, change it.
 
 [Install]
 WantedBy=multi-user.target
