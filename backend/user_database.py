@@ -2,8 +2,19 @@ import sqlite3
 from flask import Flask
 from apscheduler.schedulers.background import BackgroundScheduler
 from datetime import datetime, timedelta
-from send_notification import send_email
+from send_notification import send_email, send_SMS
 
+def print_database_contents():
+    script = """SELECT * FROM notifications WHERE DATE(notify_date) = date('now')"""
+    
+    with sqlite3.connect('user_notifications.db') as conn:
+        cur = conn.cursor()
+        cur.execute(script)
+
+        rows = cur.fetchall()
+
+        for row in rows:
+            print(row)
 
 def create_sqlite_database(filename):
     """ create a database connection to an SQLite database """
@@ -49,13 +60,6 @@ def remove_notification(conn, id):
     cur.execute(delete_stmt, (id,))
     conn.commit()
 
-app = Flask(__name__)
-scheduler = BackgroundScheduler()
-
-# MAIN:
-# create_sqlite_database('user_notifications.db')
-# create_table('user_notifications.db')
-
 
 # Form submit: add new notification to branch
 def add_to_database():
@@ -95,37 +99,34 @@ def send_notifications():
 
         for row in rows:
             print(row)
-            send_email(row[1], row[2], row[3], row[4], row[5])
+            
+            if(row[6] == "email"):
+                send_email(row[1], row[2], row[3], row[4], row[5])
+            elif(row[6] == "sms"):
+                send_SMS(row[1], row[2], row[3], row[4], row[5])
+
             print(f"Removing: {row}")
             remove_notification(conn=conn, id=row[0]) # pass notification id to remove 
 
-
-# add_to_database()
-# send_notifications()
-
-# script = """SELECT * FROM notifications WHERE DATE(notify_date) = date('now')"""
-# with sqlite3.connect('user_notifications.db') as conn:
-#     cur = conn.cursor()
-#     cur.execute(script)
-#     rows = cur.fetchall()
-
-#     print("OLD DATA")
-#     for row in rows:
-#         print(row)
+app = Flask(__name__)
+scheduler = BackgroundScheduler()
 
 # Schedule the notification check every minute
 scheduler.add_job(send_notifications, 'interval', minutes=1)
-scheduler.start()
 
-@app.route('/')
+@app.route('/signup')
 def index():
     return "Notification Service is Running!"
 
 if __name__ == '__main__':
+    scheduler.start()
     try:
         app.run(port=5000)
+
     except (KeyboardInterrupt, SystemExit):
         scheduler.shutdown()
+
+
 
 
 # PUWRW4SHLU996XH5XTLJB8E2
