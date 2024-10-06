@@ -43,6 +43,9 @@ class App:
         data = dict(await request.json())
         payload = tuple(list(data.values()))
 
+        if(payload[3] == 0):
+            return
+
         ret = request.app['this'].db.add_notification(payload)
         return web.Response(text=str(ret), content_type='text/html')
 
@@ -81,16 +84,6 @@ class App:
 
         return ws
 
-    # async def test(self):
-    #     name = "Ayoung"
-    #     email = "pvgandhi@uwaterloo.ca"
-    #     notify_by = "2024-10-05 17:04:25"
-    #     flyover_on = "2025-04-15 12:55:26"
-    #     location = "Paris, Country"
-    #
-    #     notification = (name, email, notify_by, flyover_on, location)
-    #     notif_id = self.db.add_notification(notification)
-
     async def _context(self, app):
         self.session = aiohttp.ClientSession()
         app['api'] = await API(self.session).start()
@@ -112,7 +105,7 @@ class App:
             cors.add(route)
 
     def run(self):
-        self.scheduler.add_job(self.db.send_notifications, 'interval', minutes=1)
+        self.scheduler.add_job(self.db.send_notifications, 'interval', minutes=60)
         self.scheduler.start()
 
         web.run_app(self.app)

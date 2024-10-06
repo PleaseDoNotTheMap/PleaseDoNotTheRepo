@@ -100,7 +100,7 @@
   <select x-model="dropdown" class="u-full-width" id="exampleRecipientInput">
     <option value='0'>I do not want to get notified</option>
     <option value='1'>A day before</option>
-    <option value='2'>A month before</option>
+    <option value='2'>A week before</option>
   </select>
 
   <button class ="u-half-width button-primary" type="submit">Submit</button>
@@ -140,7 +140,8 @@
                         let payload = {
                           name: this.name,
                           email: this.email,
-                          notify_date: 0,
+                          phoneNumber: this.phoneNumber,
+                          notify_date: this.dropdown,
                           flyover_date: 0,
                           location: this.location
                         }
