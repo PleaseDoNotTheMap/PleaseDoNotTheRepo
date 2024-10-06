@@ -525,6 +525,10 @@ button,
   cursor: pointer;
 }
 
+.pointer-events-none{
+  pointer-events: none;
+} 
+
 /*
 Make sure disabled buttons don't get the pointer cursor.
 */
@@ -615,6 +619,10 @@ video {
   border-width: 0;
 }
 
+.overflow-hidden
+{
+  overflow: hidden;
+}
 .visible {
   visibility: visible;
 }
@@ -694,6 +702,10 @@ video {
 
 .ml-6 {
   margin-left: 1.5rem;
+}
+
+.pl-10{
+  padding-left: 2.5rem;
 }
 
 .block {
@@ -961,6 +973,18 @@ video {
   font-weight: 700;
 }
 
+.top-16 {
+  margin-top: 4rem; /* Adjust according to your design */
+}
+
+.h-full {
+  height: calc(100% - 1000px);
+}
+
+.fixed {
+  position: fixed;
+}
+
 .font-medium {
   font-weight: 500;
 }
@@ -1068,9 +1092,9 @@ video {
   color: rgb(255 255 255 / var(--tw-text-opacity));
 }
 
-.hover\:ring-2:hover {
-  outline: 2px solid transparent;
-  outline-offset: 2px;
+.hover\:ring-white:hover {
+  --tw-ring-opacity: 1;
+  --tw-ring-color: rgb(255 255 255 / var(--tw-ring-opacity));
 }
 .focus\:outline-none:focus {
   outline: 2px solid transparent;
