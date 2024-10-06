@@ -151,4 +151,3 @@ def send_SMS(name, phone_number, date_to_notify, date_of_flyover, location):
 
   except Exception as e:
      print(e)
-

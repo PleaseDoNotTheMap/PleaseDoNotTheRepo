@@ -14,6 +14,7 @@
 
   <script type="module" src="https://unpkg.com/@googlemaps/extended-component-library@0.6"></script>
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCunx3DEkoYwHYb0RYa4hK6wZYDug9Z2qI&libraries=places"></script>
+   
 
 </head>
 <body>
@@ -315,7 +316,20 @@
         <div class="bg-white rounded-lg p-5 z-30">
          
 
-     
+          <gmpx-api-loader key="AIzaSyCz--Lf8sT9jaHF8CN2jy2wSVYLWuuopVo" solution-channel="GMP_GE_placepicker_v1"></gmpx-api-loader>
+          <div>
+            <label for="price" class="block text-sm font-medium leading-6 text-black-700">d</label>
+            <div class="block text-sm relative mt-2 rounded-md shadow-sm">
+          
+              <input class="rounded-md mt-6 ml-6 px-4 py-3 border-2 border-gray-300 shadow-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition duration-300 ease-in-out bg-gradient-to-r from-white to-gray-100 text-black-700 placeholder-gray-400" 
+              type="location" 
+              placeholder="Search Location" 
+              id="locationInput2">  
+              <div class="absolute inset-y-0 right-0 flex items-center">
+                <label for="currency" class="sr-only">Currency</label>
+              </div>
+            </div>
+          </div>
            
           
           <div x-data="formHandler" >
@@ -394,8 +408,8 @@
           
           </div>
           
-    
-          
+
+
           
           <script>
             function formHandler() {
@@ -413,23 +427,44 @@
           
                           init() {
                               this.initAutocomplete();
+                              this.initAutocomplete2();
                           },
           
                           initAutocomplete() {
                               const autocompleteInput = document.getElementById('locationInput');
-                              this.placeAutocomplete = new google.maps.places.Autocomplete(autocompleteInput);
-          
-                              this.placeAutocomplete.addListener('place_changed', () => {
-                                  const place = this.placeAutocomplete.getPlace();
-                                  if (place && place.geometry) {
-                                      console.log(place)
-                                      this.lat = place.geometry.location.lat()
-                                      this.long = place.geometry.location.lng()
-                                      this.addressPretty = place.formatted_address
-                                      this.addressComponents = place.address_components
-                                      }
-                                  });
+
+                                this.placeAutocomplete = new google.maps.places.Autocomplete(autocompleteInput);
+            
+                                this.placeAutocomplete.addListener('place_changed', () => {
+                                    const place = this.placeAutocomplete.getPlace();
+                                    if (place && place.geometry) {
+                                        console.log(place)
+                                        this.lat = place.geometry.location.lat()
+                                        this.long = place.geometry.location.lng()
+                                        this.addressPretty = place.formatted_address
+                                        this.addressComponents = place.address_components
+                                        }
+                                    });
+                            
+ 
                           },
+
+                          initAutocomplete2() {
+                              const autocompleteInput = document.getElementById('locationInput2');
+
+                                this.placeAutocomplete = new google.maps.places.Autocomplete(autocompleteInput);
+            
+                                this.placeAutocomplete.addListener('place_changed', () => {
+                                    const place = this.placeAutocomplete.getPlace();
+                                    if (place && place.geometry) {
+                                        console.log(place)
+                                        this.lat = place.geometry.location.lat()
+                                        this.long = place.geometry.location.lng()
+                                        this.addressPretty = place.formatted_address
+                                        this.addressComponents = place.address_components
+                                        }
+                                    });
+                            },
           
                           async submitForm() {
                               try {
@@ -474,6 +509,9 @@
     </div>
 </div>
 </div>
+
+
+
 
 
 <div class="bg-gray-800">

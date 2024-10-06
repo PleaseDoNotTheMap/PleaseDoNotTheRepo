@@ -30,7 +30,9 @@
     <!-- Places API
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <script type="module" src="https://unpkg.com/@googlemaps/extended-component-library@0.6"></script>
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCunx3DEkoYwHYb0RYa4hK6wZYDug9Z2qI&libraries=places"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCz--Lf8sT9jaHF8CN2jy2wSVYLWuuopVo&libraries=places"></script>
+  
+
 
 </head>
 <body>
@@ -75,13 +77,17 @@
   <gmpx-api-loader key="AIzaSyCunx3DEkoYwHYb0RYa4hK6wZYDug9Z2qI" solution-channel="GMP_GE_placepicker_v1"></gmpx-api-loader>
   <input class="u-full-width" type = "text" placeholder="Lat 42.497971, Long -92.382751" id="locationInput" x-model="location" required></textarea>
 
-
   <script>
-    // Get references to the autocomplete input and place info elements
-    const autocompleteInput = document.getElementById('locationInput');
 
-    // Set up Google Places Autocomplete
-    const autocomplete = new google.maps.places.Autocomplete(autocompleteInput);
+    window.onload = function() {
+      const autocompleteInput = document.getElementById('locationInput');
+      const autocomplete = new google.maps.places.Autocomplete(autocompleteInput);
+    };
+    // // Get references to the autocomplete input and place info elements
+    // const autocompleteInput = document.getElementById('locationInput');
+
+    // // Set up Google Places Autocomplete
+    // const autocomplete = new google.maps.places.Autocomplete(autocompleteInput);
 
     // Listen for the place_changed event
     google.maps.event.addListener(autocomplete, 'place_changed', function () {
