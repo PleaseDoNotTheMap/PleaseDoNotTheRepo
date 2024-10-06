@@ -6,13 +6,15 @@ import logging
 import json
 from datetime import datetime
 from pystac.extensions.eo import EOExtension as eo
+import re
 
+from collections import OrderedDict
 from get_wrs import ConvertToWRS
-#wrs_converter = ConvertToWRS(shapefile="./WRS2_descending.shp")
+wrs_converter = ConvertToWRS(shapefile="./WRS2_descending.shp")
 
 cycles = None
 with open("cycles_full.json", "r") as f:
-    cycles = json.load(f)
+    cycles = json.load(f, object_pairs_hook=OrderedDict)
 
 
 def lat_lng_to_wrs(lat: float, lng: float) -> list:
@@ -81,23 +83,35 @@ def get_next_acq(lat: float, lng: float) -> dict:
     """
     values = {
 #        "landsat_7": None,
-        "landsat_8": None,
+        "landsat_8": None, #{"path": 100, "date": datetime}
         "landsat_9": None
     }
 
     now = datetime.now()
-
-    path = 67
+    # [{'path': 201, 'row': 25}, {'path': 202, 'row': 25} ...]
+    paths = set([d['path'] for d in wrs_converter.get_wrs(lat, lng)])
 
     for satellite in values.keys():
         for mission in cycles[satellite].keys():
             mission_date = datetime.strptime(mission, "%m/%d/%Y")
-            if mission_date > now and str(path) in cycles[satellite][mission]["path"]:
-                values[satellite] = mission_date
+            if mission_date >= datetime(now.year, now.month, now.day):
+                comp = set([
+                    int(v)
+                    for v in cycles[satellite][mission]["path"].split(",")
+                ])
+                inter = paths.intersection(comp)
+
+                if len(inter) == 0:
+                    continue
+                values[satellite] = {
+                    "path": inter.pop(),
+                    "cycle": cycles[satellite][mission]["cycle"],
+                    "date": mission_date
+                }
                 break
     return values
 
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
-    print(get_next_acq(47.5469, -122.2751))
+    print(get_next_acq(0, 0))
