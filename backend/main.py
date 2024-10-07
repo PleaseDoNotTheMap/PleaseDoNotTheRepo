@@ -2,7 +2,7 @@ import ast
 import aiohttp_cors
 import json
 import logging
-
+import getMeta.py
 import aiohttp
 from aiohttp import web
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -92,7 +92,7 @@ class App:
         yield
         await self.session.close()
         
-        @routes.get('/download')
+    @routes.get('/download')
     async def submit(request: aiohttp.web.Request):
         try:
             data = await request.json()
