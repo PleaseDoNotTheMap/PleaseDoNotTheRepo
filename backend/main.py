@@ -2,7 +2,7 @@ import ast
 import aiohttp_cors
 import json
 import logging
-import getMeta.py
+import getMeta
 import aiohttp
 from aiohttp import web
 from apscheduler.schedulers.background import BackgroundScheduler
