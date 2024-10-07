@@ -2,7 +2,7 @@ import ast
 import aiohttp_cors
 import json
 import logging
-
+import os
 import aiohttp
 from aiohttp import web
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -82,6 +82,8 @@ class App:
         logger.info(f"Ws conn closed")
 
         return ws
+    
+       
 
     async def _context(self, app):
         self.session = aiohttp.ClientSession()
@@ -90,6 +92,18 @@ class App:
 
         yield
         await self.session.close()
+        
+    @routes.get('/download')
+    async def download_file(request):
+        file_path = 'path/to/your/file.txt'  # Update this path to the file you want to serve
+        if os.path.exists(file_path):
+            return web.FileResponse(file_path)
+        else:
+            return web.Response(status=404, text='File not found')
+    app = web.Applications()
+    app.app_routea(routes)
+    
+    
 
     def _setup_cors(self):
         cors = aiohttp_cors.setup(self.app, defaults={
