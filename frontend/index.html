@@ -216,14 +216,11 @@
                                 <input type="text" name="coordinates" id="coordinates" class="block w-full rounded-md border-0 py-1.5 pl-3 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" placeholder="Enter coordinates (e.g., 37.7749, -122.4194)" required>
                               </div>
                             </div>
-                          <p>This is the content of the drawer.</p>
-                            <button @click="modalOpen = true" class="mt-4 bg-blue-600 text-white px-4 p-2 rounded-md">Map it!</button>
+                          <p></p>
               
-                              <button @click="open = false" class="bg-gray-800 text-white px-4 py-2 rounded-md">Close</button>
+                              <button @click="open = false" class="mt-4 bg-gray-800 text-white px-4 py-2 rounded-md">Close</button>
                           </div>
                           <div class="relative mt-2 rounded-md shadow-sm">
-                            <span class="inline-flex items-center rounded-md bg-indigo-50 px-2 py-1 text-xs text-indigo-700 ring-1 ring-inset ring-indigo-700/10">Label for leo</span>
-                            <span class="inline-flex items-center rounded-md bg-indigo-50 px-2 py-1 text-xs text-indigo-700 ring-1 ring-inset ring-indigo-700/10">Label for leo</span>
                             
                           </div>
                     </div>
@@ -316,21 +313,7 @@
         <div class="bg-white rounded-lg p-5 z-30">
          
 
-          <gmpx-api-loader key="AIzaSyCz--Lf8sT9jaHF8CN2jy2wSVYLWuuopVo" solution-channel="GMP_GE_placepicker_v1"></gmpx-api-loader>
-          <div>
-            <label for="price" class="block text-sm font-medium leading-6 text-black-700">d</label>
-            <div class="block text-sm relative mt-2 rounded-md shadow-sm">
-          
-              <input class="rounded-md mt-6 ml-6 px-4 py-3 border-2 border-gray-300 shadow-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition duration-300 ease-in-out bg-gradient-to-r from-white to-gray-100 text-black-700 placeholder-gray-400" 
-              type="location" 
-              placeholder="Search Location" 
-              id="locationInput2">  
-              <div class="absolute inset-y-0 right-0 flex items-center">
-                <label for="currency" class="sr-only">Currency</label>
-              </div>
-            </div>
-          </div>
-           
+ 
           
           <div x-data="formHandler" >
           
@@ -352,15 +335,21 @@
               
              
               <div class="sm:col-span-4">
+                <div class="mt-2">
+
                 <input class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" type="email" placeholder=" cat@spacemail.com" id="emailInput" x-model="email" required>
+              </div>
               </div>
             </div>
 
             <div class="sm:col-span-4">
-              <label for="usernameInput">Your Username</label>
+              <label for="nameInput">Your Name</label>
              
               <div class="sm:col-span-4">
-                <input class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"  type="text" placeholder=" Kitten" id="usernameInput" x-model="username" required>
+                <div class="mt-2">
+                <input class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"  type="text" 
+                placeholder=" Kitten" id="nameInput" x-model="name" required>
+             </div>
              </div>
             </div>
 
@@ -375,9 +364,11 @@
 
             <div class="sm:col-span-4">
               <label for="locationInput">Where's the flyover location you'd like to be notified of?</label>
-              
+              <gmpx-api-loader key="AIzaSyCz--Lf8sT9jaHF8CN2jy2wSVYLWuuopVo" solution-channel="GMP_GE_placepicker_v1"></gmpx-api-loader>
               <div class="sm:col-span-4">
-                <input class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"  type = "text" placeholder=" Lat 42.497971, Long -92.382751" id="locationInput" x-model="location" required></textarea>
+                <input class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"  type = "text" placeholder=" University of Waterloo" 
+                id="locationInput2" 
+                x-model="location" required></textarea>
              </div>
             </div>
 
@@ -388,9 +379,9 @@
             <div class="sm:col-span-4">
  
             <select x-model="dropdown" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" id="exampleRecipientInput">
-            <option value='0'>I do not want to get notified</option>
-            <option value='1'>A day before</option>
-            <option value='2'>A week before</option>
+            <option value='0'> I do not want to get notified</option>
+            <option value='1'> A day before</option>
+            <option value='2'> A week before</option>
             </select>
   </div>
   </div>

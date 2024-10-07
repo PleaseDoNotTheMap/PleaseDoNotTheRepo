@@ -370,6 +370,10 @@ input:where([type='submit']) {
   /* 2 */
 }
 
+[type="text"] {
+  padding-right: 0.75rem
+}
+
 /*
 Use the modern Firefox focus style for all focusable elements.
 */
