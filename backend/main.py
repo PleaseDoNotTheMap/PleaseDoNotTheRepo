@@ -6,6 +6,7 @@ import os
 import aiohttp
 from aiohttp import web
 from apscheduler.schedulers.background import BackgroundScheduler
+import getMeta
 
 from database import Database
 from landstat import API
@@ -94,16 +95,26 @@ class App:
         await self.session.close()
         
     @routes.get('/download')
-    async def download_file(request):
-        file_path = 'path/to/your/file.txt'  # Update this path to the file you want to serve
-        if os.path.exists(file_path):
-            return web.FileResponse(file_path)
-        else:
-            return web.Response(status=404, text='File not found')
-    app = web.Applications()
-    app.app_routea(routes)
+    async def submit(request: aiohttp.web.Request):
+        try:
+            data = await request.json()
+            latitude = data.get("latitude")
+            longitude = data.get("longitude")
+            getMeta.MetaData(longitude, latitude)
+        except Exception as e:
+            logger.error(f"Error processing request: {e}")
+            return web.Response(status=500, text="Internal Server Error")
+        
+    @routes.get('/data')
+    async def send_json(request):
+        # Load your JSON file
+        with open('path/to/your/data.json', 'r') as f:
+            data = json.load(f)
+        # Send JSON response to the client
+        return web.json_response(data)
+            
     
-    
+
 
     def _setup_cors(self):
         cors = aiohttp_cors.setup(self.app, defaults={
