@@ -154,12 +154,7 @@ def MetaData(longitu, latitu):
             json.dump(all_metadata, json_file, indent=2)
         # Logout so the API Key cannot be used anymore
         
-        with open('ids.csv', mode='w', newline='') as file:
-            writer = csv.writer(file)
-        
-            # If you want to write each id in a new row:
-            for data in all_metadata:
-                writer.writerow([data])
+    
                 
         endpoint = "logout"  
         if sendRequest(serviceUrl + endpoint, None, apiKey) is None:        

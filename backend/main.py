@@ -108,7 +108,7 @@ class App:
     @routes.get('/data')
     async def send_json(request):
         # Load your JSON file
-        with open('path/to/your/data.json', 'r') as f:
+        with open('scene_metadata.json', 'r') as f:
             data = json.load(f)
         # Send JSON response to the client
         return web.json_response(data)
