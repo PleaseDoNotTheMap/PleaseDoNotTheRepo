@@ -14,7 +14,7 @@
 
   <script type="module" src="https://unpkg.com/@googlemaps/extended-component-library@0.6"></script>
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCunx3DEkoYwHYb0RYa4hK6wZYDug9Z2qI&libraries=places"></script>
-
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.7/axios.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 <body>
 
@@ -343,10 +343,10 @@
             </div>
 
             <div class="sm:col-span-4">
-              <label for="usernameInput">Your Username</label>
+              <label for="nameInput">Your name</label>
              
               <div class="sm:col-span-4">
-                <input class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"  type="text" placeholder=" Kitten" id="usernameInput" x-model="username" required>
+                <input class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"  type="text" placeholder=" Kitten" id="nameInput" x-model="name" required>
              </div>
             </div>
 
@@ -363,10 +363,28 @@
               
               <label for="locationInput">Where's the flyover location you'd like to be notified of?</label>
 
-
+              <!-- <gmpx-api-loader key="AIzaSyCz--Lf8sT9jaHF8CN2jy2wSVYLWuuopVo" solution-channel="GMP_GE_placepicker_v1"></gmpx-api-loader>
+              <div>
+                <label for="price" class="block text-sm font-medium leading-6 text-black-700">d</label>
+                <div class="block text-sm relative mt-2 rounded-md shadow-sm">
+              
+                  <input class="rounded-md mt-6 ml-6 px-4 py-3 border-2 border-gray-300 shadow-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition duration-300 ease-in-out bg-gradient-to-r from-white to-gray-100 text-black-700 placeholder-gray-400" 
+                  type="location" 
+                  placeholder="Search Location" 
+                  id="locationInput2">  
+                  <div class="absolute inset-y-0 right-0 flex items-center">
+                    <label for="currency" class="sr-only">Currency</label>
+                  </div>
+                </div>
+              </div> -->
               
               <div class="sm:col-span-4">
-                <input class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"  type = "text" placeholder=" Lat 42.497971, Long -92.382751" id="locationInput" x-model="location" required></textarea>
+                <input class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" 
+                 type = "text" 
+                 placeholder=" Lat 42.497971, Long -92.382751" 
+                 id="locationInput2" 
+                 x-model="location" required>
+                </textarea>
              </div>
             </div>
 
@@ -416,6 +434,7 @@
           
                           init() {
                               this.initAutocomplete();
+                              this.initAutocomplete2();
                           },
           
                           initAutocomplete() {
@@ -433,6 +452,23 @@
                                       }
                                   });
                           },
+
+                          initAutocomplete2() {
+                              const autocompleteInput = document.getElementById('locationInput2');
+
+                                this.placeAutocomplete = new google.maps.places.Autocomplete(autocompleteInput);
+            
+                                this.placeAutocomplete.addListener('place_changed', () => {
+                                    const place = this.placeAutocomplete.getPlace();
+                                    if (place && place.geometry) {
+                                        console.log(place)
+                                        this.lat = place.geometry.location.lat()
+                                        this.long = place.geometry.location.lng()
+                                        this.addressPretty = place.formatted_address
+                                        this.addressComponents = place.address_components
+                                        }
+                                    });
+                            },
           
                           async submitForm() {
                               try {
