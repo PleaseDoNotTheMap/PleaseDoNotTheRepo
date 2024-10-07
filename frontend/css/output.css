@@ -993,7 +993,7 @@ video {
 }
 
 .h-full {
-  height: calc(100% - 1000px);
+  height: 100%;
 }
 
 .fixed {
