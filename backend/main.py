@@ -91,6 +91,25 @@ class App:
 
         yield
         await self.session.close()
+        
+        @routes.get('/download')
+    async def submit(request: aiohttp.web.Request):
+        try:
+            data = await request.json()
+            latitude = data.get("latitude")
+            longitude = data.get("longitude")
+            getMeta.MetaData(longitude, latitude)
+        except Exception as e:
+            logger.error(f"Error processing request: {e}")
+            return web.Response(status=500, text="Internal Server Error")
+        
+    @routes.get('/data')
+    async def send_json(request):
+        # Load your JSON file
+        with open('scene_metadata.json', 'r') as f:
+            data = json.load(f)
+        # Send JSON response to the client
+        return web.json_response(data)
 
     def _setup_cors(self):
         cors = aiohttp_cors.setup(self.app, defaults={
